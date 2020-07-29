@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Арина Вернидуб](https://up.htmlacademy.ru/ecmascript/12/user/1509573).
-* Наставник: `Алексей Беляев`.
+* Наставник: [Алексей Беляев](https://htmlacademy.ru/profile/id691043).
 
 ---
 
