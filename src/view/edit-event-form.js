@@ -8,7 +8,7 @@ export const createEditEventTemplate = (curEvent = {}) => {
       name: `Flight`,
       type: `moving`
     },
-    destinationCity = 'California',
+    destinationCity = `California`,
     startDate = new Date(),
     duration = {
       hour: 0,
@@ -19,7 +19,7 @@ export const createEditEventTemplate = (curEvent = {}) => {
     destination = {}
   } = curEvent;
 
-  const prep = event.type === 'arrival'
+  const prep = event.type === `arrival`
     ? `in`
     : `to`;
 
@@ -63,7 +63,6 @@ export const createEditEventTemplate = (curEvent = {}) => {
     }
     return descrPhotoList;
   };
-
 
   const endDate = getEndTime(startDate, duration);
 
