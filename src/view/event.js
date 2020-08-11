@@ -1,11 +1,16 @@
-export const createEventTemplate = (curEvent) => {
-  const {event, destinationCity, startTime, duration, price, options} = curEvent;
+import {getEndTime} from '../utils.js';
+import {prettifyTime} from '../utils.js';
 
-  const prep = event.type === 'arrival'
+const EVENT_TYPE_NAME = `arrival`;
+
+export const createEventTemplate = (curEvent) => {
+  const {event, destinationCity, startDate, duration, price, options} = curEvent;
+
+  const prep = event.type === EVENT_TYPE_NAME
     ? `in`
     : `to`;
 
-  const createOptionTemplate = (options) => {
+  const createOptionTemplate = () => {
     let optionList = ``;
     if (options.length > 0) {
       for (let option of options.slice(0, 3)) {
@@ -19,6 +24,8 @@ export const createEventTemplate = (curEvent) => {
   };
 
   const optionTemplate = createOptionTemplate(options);
+
+  const endDate = getEndTime(startDate, duration);
 
   return (
     `<li class="trip-days__item  day">
@@ -37,9 +44,13 @@ export const createEventTemplate = (curEvent) => {
 
               <div class="event__schedule">
                 <p class="event__time">
-                  <time class="event__start-time" datetime="2019-03-18T10:30">${startTime}</time>
+                  <time class="event__start-time" datetime="">
+                    ${prettifyTime(startDate.getHours())}:${prettifyTime(startDate.getMinutes())}
+                   </time>
                   &mdash;
-                  <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+                  <time class="event__end-time" datetime="">
+                  ${prettifyTime(endDate.getHours())}:${prettifyTime(endDate.getMinutes())}
+                  </time>
                 </p>
                 <p class="event__duration">${duration.hour}H ${duration.minute}M</p>
               </div>

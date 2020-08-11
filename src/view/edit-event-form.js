@@ -1,4 +1,6 @@
 import {OPTIONS} from '../const.js';
+import {getEndTime} from '../utils.js';
+import {prettifyTime} from '../utils.js';
 
 export const createEditEventTemplate = (curEvent = {}) => {
   const {
@@ -7,12 +9,16 @@ export const createEditEventTemplate = (curEvent = {}) => {
       type: `moving`
     },
     destinationCity = 'California',
-    startTime = '',
-    duration = '',
+    startDate = new Date(),
+    duration = {
+      hour: 0,
+      minute: 0
+    },
     price = 0,
     options = [],
     destination = {}
   } = curEvent;
+
   const prep = event.type === 'arrival'
     ? `in`
     : `to`;
@@ -50,6 +56,21 @@ export const createEditEventTemplate = (curEvent = {}) => {
   };
   const optionTemplate = createOptionTemplate();
 
+  const createDescrPhotoTemplate = (photoList) => {
+    let descrPhotoList = ``;
+    for (let photo of photoList) {
+      descrPhotoList += `<img class="event__photo" src="${photo}" alt="Event photo">`;
+    }
+    return descrPhotoList;
+  };
+
+
+  const endDate = getEndTime(startDate, duration);
+
+  const prettifyDate = (date) => {
+    return prettifyTime(date.getDate()) + `/` + prettifyTime(date.getMonth()) + `/` + String(date.getFullYear()).slice(-2) + ` ` + prettifyTime(date.getHours()) + `:` + prettifyTime(date.getMinutes());
+  };
+
   const createDescriptionTemplate = () => {
     if (!destination.descr && !destination.photo) {
       return ``;
@@ -59,7 +80,7 @@ export const createEditEventTemplate = (curEvent = {}) => {
       ${destination.descr ? `<p class="event__destination-description">${destination.descr}</p>` : ``}
       <div class="event__photos-container">
         <div class="event__photos-tape">
-          ${destination.photo ? `<img class="event__photo" src="${destination.photo}" alt="Event photo">` : ``}
+         ${createDescrPhotoTemplate(destination.photo)}
         </div>
       </div>
     </section>`;
@@ -154,12 +175,18 @@ export const createEditEventTemplate = (curEvent = {}) => {
           <label class="visually-hidden" for="event-start-time-1">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
+          <input
+            class="event__input event__input--time"
+            id="event-start-time-1"
+            type="text"
+            name="event-start-time"
+            value="${prettifyDate(startDate)}"
+          >
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 00:00">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${prettifyDate(endDate)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">

@@ -94,24 +94,34 @@ const generateDuration = () => {
   return duration;
 };
 
-const generateStartTime = (gap) => {
+const generateStartDate = (gap) => {
   const min = new Date();
   const max = new Date();
   max.setDate(min.getDate() + Math.round(gap / 2));
   min.setDate(min.getDate() - Math.round(gap / 2));
   return new Date(+min + Math.random() * (max - min));
 };
+
+const generatePhotos = () => {
+  let photos = [];
+  for (let i = 0; i < getRandomInteger(1, 10); i++) {
+    photos.push(`http://picsum.photos/248/152?r=${Math.random()}`);
+  }
+  return photos;
+};
+
+
 export const generateEvent = () => {
   return {
     event: generateEventType(),
     destinationCity: generateDestinationCity(),
-    startTime: generateStartTime(15),
+    startDate: generateStartDate(15),
     duration: generateDuration(),
     price: getRandomInteger(MIN_PRICE, MAX_PRICE),
     options: generateOptions(`moving`),
     destination: {
       descr: destinationDescription(),
-      photo: `http://picsum.photos/248/152?r=${Math.random()}`
+      photo: generatePhotos()
     }
   };
 };
