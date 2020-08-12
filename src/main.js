@@ -2,27 +2,35 @@ import {createMenuControlsTemplate} from "./view/site-menu.js";
 import {createTripInfoTemplate} from "./view/trip-info.js";
 import {createFiltersTemplate} from "./view/filter.js";
 import {createSortTemplate} from "./view/sort.js";
-import {createEventTemplate} from "./view/event.js";
+import {createDayTemplate} from "./view/day.js";
 import {createEditEventTemplate} from "./view/edit-event-form.js";
+import {generateEvent} from "./mock/event.js";
 
-const EVENTS_COUNT = 3;
+const EVENTS_COUNT = 20;
 
-const render = (container, template, place) => {
+const events = new Array(EVENTS_COUNT).fill().map(generateEvent);
+
+events.sort((a, b) => {
+  const dateA = new Date(a.startDate);
+  const dateB = new Date(b.startDate);
+  return dateA - dateB;
+});
+
+
+const renderView = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
 const tripMainElement = document.querySelector(`.trip-main`);
-render(tripMainElement, createTripInfoTemplate(), `afterbegin`);
+renderView(tripMainElement, createTripInfoTemplate(), `afterbegin`);
 
 const tripControlElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
 const tripControlMenuTitleElement = tripMainElement.querySelector(`.trip-main__trip-controls-menu-title`);
-render(tripControlMenuTitleElement, createMenuControlsTemplate(), `afterend`);
-render(tripControlElement, createFiltersTemplate(), `beforeend`);
+renderView(tripControlMenuTitleElement, createMenuControlsTemplate(), `afterend`);
+renderView(tripControlElement, createFiltersTemplate(), `beforeend`);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
-render(tripEventsElement, createSortTemplate(), `beforeend`);
-render(tripEventsElement, createEditEventTemplate(), `beforeend`);
+renderView(tripEventsElement, createSortTemplate(), `beforeend`);
+renderView(tripEventsElement, createEditEventTemplate(events[0]), `beforeend`);
 
-for (let i = 0; i < EVENTS_COUNT; i++) {
-  render(tripEventsElement, createEventTemplate(), `beforeend`);
-}
+renderView(tripEventsElement, createDayTemplate(events), `beforeend`);
