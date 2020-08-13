@@ -124,7 +124,6 @@ const generatePhotos = () => {
   return photos;
 };
 
-
 export const generateEvent = () => {
   return {
     event: generateEventType(),

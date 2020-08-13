@@ -26,7 +26,6 @@ render(tripControlElement, new FiltersView().getElement(), RenderPosition.BEFORE
 const tripControlMenuTitleElement = tripMainElement.querySelector(`.trip-main__trip-controls-menu-title`);
 render(tripControlMenuTitleElement, new MenuControlsView().getElement(), RenderPosition.AFTEREND);
 
-
 const tripEventsElement = document.querySelector(`.trip-events`);
 render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 render(tripEventsElement, new EditEventView(events[0]).getElement(), RenderPosition.BEFOREEND);
