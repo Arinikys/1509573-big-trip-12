@@ -1,10 +1,11 @@
-import {createMenuControlsTemplate} from "./view/site-menu.js";
-import {createTripInfoTemplate} from "./view/trip-info.js";
-import {createFiltersTemplate} from "./view/filter.js";
-import {createSortTemplate} from "./view/sort.js";
-import {createDayTemplate} from "./view/day.js";
-import {createEditEventTemplate} from "./view/edit-event-form.js";
+import MenuControlsView from "./view/site-menu.js";
+import TripInfoView from "./view/trip-info.js";
+import FiltersView from "./view/filter.js";
+import SortView from "./view/sort.js";
+import DayView from "./view/day.js";
+import EditEventView from "./view/edit-event-form.js";
 import {generateEvent} from "./mock/event.js";
+import {render, RenderPosition} from "./utils.js";
 
 const EVENTS_COUNT = 20;
 
@@ -16,21 +17,17 @@ events.sort((a, b) => {
   return dateA - dateB;
 });
 
-
-const renderView = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
-
 const tripMainElement = document.querySelector(`.trip-main`);
-renderView(tripMainElement, createTripInfoTemplate(), `afterbegin`);
+render(tripMainElement, new TripInfoView().getElement(), RenderPosition.AFTERBEGIN);
 
 const tripControlElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
+render(tripControlElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
+
 const tripControlMenuTitleElement = tripMainElement.querySelector(`.trip-main__trip-controls-menu-title`);
-renderView(tripControlMenuTitleElement, createMenuControlsTemplate(), `afterend`);
-renderView(tripControlElement, createFiltersTemplate(), `beforeend`);
+render(tripControlMenuTitleElement, new MenuControlsView().getElement(), RenderPosition.AFTEREND);
+
 
 const tripEventsElement = document.querySelector(`.trip-events`);
-renderView(tripEventsElement, createSortTemplate(), `beforeend`);
-renderView(tripEventsElement, createEditEventTemplate(events[0]), `beforeend`);
-
-renderView(tripEventsElement, createDayTemplate(events), `beforeend`);
+render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+render(tripEventsElement, new EditEventView(events[0]).getElement(), RenderPosition.BEFOREEND);
+render(tripEventsElement, new DayView(events).getElement(), RenderPosition.BEFOREEND);

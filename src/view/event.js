@@ -1,9 +1,10 @@
 import {getEndTime} from '../utils.js';
 import {prettifyTime} from '../utils.js';
+import {createElement} from "../utils.js";
 
 const EVENT_TYPE_NAME = `arrival`;
 
-export const createEventTemplate = (curEvent) => {
+const createEventTemplate = (curEvent) => {
   const {event, destinationCity, startDate, duration, price, options} = curEvent;
 
   const prep = event.type === EVENT_TYPE_NAME
@@ -26,7 +27,6 @@ export const createEventTemplate = (curEvent) => {
   const optionTemplate = createOptionTemplate(options);
 
   const endDate = getEndTime(startDate, duration);
-
 
   return (
     `<li class="trip-events__item">
@@ -64,3 +64,27 @@ export const createEventTemplate = (curEvent) => {
     </li>`
   );
 };
+
+export default class Event {
+  constructor(event) {
+    this._event = event;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+      console.log(this._element);
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
