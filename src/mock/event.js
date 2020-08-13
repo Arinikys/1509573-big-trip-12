@@ -58,7 +58,7 @@ const DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 const DAY_GAP = 15;
 const MAX_HOURS = 24;
 const MAX_MINUTES = 59;
-const MIN_OPTION = 4;
+const MIN_OPTION = 0;
 const MAX_OPTION = 4;
 const MIN_PHOTO_COUNT = 1;
 const MAX_PHOTO_COUNT = 10;
@@ -68,7 +68,7 @@ const generateOptions = (eventType) => {
   const optionCount = getRandomInteger(MIN_OPTION, MAX_OPTION);
   const optionSet = new Set();
   do {
-    const curOptionNum = getRandomInteger(MIN_OPTION, OPTIONS.length - 1);
+    const curOptionNum = getRandomInteger(0, OPTIONS.length - 1);
     if (OPTIONS[curOptionNum].eventType === eventType) {
       optionSet.add(curOptionNum);
     }
@@ -108,11 +108,11 @@ const generateDuration = () => {
   };
 };
 
-const generateStartDate = (gap) => {
+const generateStartDate = () => {
   const min = new Date();
   const max = new Date();
-  max.setDate(min.getDate() + Math.round(gap / 2));
-  min.setDate(min.getDate() - Math.round(gap / 2));
+  max.setDate(min.getDate() + Math.round(DAY_GAP / 2));
+  min.setDate(min.getDate() - Math.round(DAY_GAP / 2));
   return new Date(+min + Math.random() * (max - min));
 };
 
@@ -129,7 +129,7 @@ export const generateEvent = () => {
   return {
     event: generateEventType(),
     destinationCity: generateDestinationCity(),
-    startDate: generateStartDate(DAY_GAP),
+    startDate: generateStartDate(),
     duration: generateDuration(),
     price: getRandomInteger(MIN_PRICE, MAX_PRICE),
     options: generateOptions(`moving`),
