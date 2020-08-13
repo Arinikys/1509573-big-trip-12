@@ -3,6 +3,7 @@ import {prettifyTime} from '../utils.js';
 import {createElement} from "../utils.js";
 
 const EVENT_TYPE_NAME = `arrival`;
+const MAX_VIS_OPTION_COUNT = 3;
 
 const createEventTemplate = (curEvent) => {
   const {event, destinationCity, startDate, duration, price, options} = curEvent;
@@ -14,7 +15,7 @@ const createEventTemplate = (curEvent) => {
   const createOptionTemplate = () => {
     let optionList = ``;
     if (options.length > 0) {
-      for (let option of options.slice(0, 3)) {
+      for (let option of options.slice(0, MAX_VIS_OPTION_COUNT)) {
         optionList += `<li class="event__offer">
           <span class="event__offer-title">${option.name}</span>
           &plus; &euro; &nbsp;<span class="event__offer-price">${option.price}</span>
