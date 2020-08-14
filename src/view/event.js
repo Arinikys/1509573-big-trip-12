@@ -1,9 +1,11 @@
 import {getEndTime} from '../utils.js';
 import {prettifyTime} from '../utils.js';
+import {createElement} from "../utils.js";
 
 const EVENT_TYPE_NAME = `arrival`;
+const MAX_VIS_OPTION_COUNT = 3;
 
-export const createEventTemplate = (curEvent) => {
+const createEventTemplate = (curEvent) => {
   const {event, destinationCity, startDate, duration, price, options} = curEvent;
 
   const prep = event.type === EVENT_TYPE_NAME
@@ -13,7 +15,7 @@ export const createEventTemplate = (curEvent) => {
   const createOptionTemplate = () => {
     let optionList = ``;
     if (options.length > 0) {
-      for (let option of options.slice(0, 3)) {
+      for (let option of options.slice(0, MAX_VIS_OPTION_COUNT)) {
         optionList += `<li class="event__offer">
           <span class="event__offer-title">${option.name}</span>
           &plus; &euro; &nbsp;<span class="event__offer-price">${option.price}</span>
@@ -26,7 +28,6 @@ export const createEventTemplate = (curEvent) => {
   const optionTemplate = createOptionTemplate(options);
 
   const endDate = getEndTime(startDate, duration);
-
 
   return (
     `<li class="trip-events__item">
@@ -64,3 +65,26 @@ export const createEventTemplate = (curEvent) => {
     </li>`
   );
 };
+
+export default class Event {
+  constructor(event) {
+    this._event = event;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
