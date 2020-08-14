@@ -4,6 +4,7 @@ import FiltersView from "./view/filter.js";
 import SortView from "./view/sort.js";
 import DayView from "./view/day.js";
 import EditEventView from "./view/edit-event-form.js";
+import EventView from "./view/event.js";
 import {generateEvent} from "./mock/event.js";
 import {render, RenderPosition} from "./utils.js";
 
@@ -28,5 +29,44 @@ render(tripControlMenuTitleElement, new MenuControlsView().getElement(), RenderP
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
-render(tripEventsElement, new EditEventView(events[0]).getElement(), RenderPosition.BEFOREEND);
 render(tripEventsElement, new DayView(events).getElement(), RenderPosition.BEFOREEND);
+
+const DaysElement = document.querySelectorAll(`.trip-days__item`);
+
+const renderEvents = (eventListElement, event) => {
+  const eventComponent = new EventView(event);
+  const eventEditComponent = new EditEventView(event);
+  console.log(eventComponent.getElement());
+  render(eventListElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
+
+  const replaceEventToForm = () => {
+    eventListElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
+
+  const replaceFormToEvent = () => {
+    eventListElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
+
+  eventComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    replaceEventToForm();
+  });
+
+  eventEditComponent.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, () => {
+    replaceFormToEvent();
+  });
+
+  eventEditComponent.getElement().addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    replaceFormToEvent();
+  });
+};
+
+for (let dayElement of DaysElement) {
+  let date = new Date(dayElement.querySelector(`.day__date`).getAttribute(`datetime`));
+  let dayEvents = events.filter((event) => event.startDate.getMonth() === date.getMonth() && event.startDate.getDate() === date.getDate());
+  for (let event of dayEvents) {
+    renderEvents(dayElement.querySelector(`.trip-events__list`), event);
+  }
+}
+
+
