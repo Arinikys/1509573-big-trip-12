@@ -1,7 +1,7 @@
 import {OPTIONS} from '../const.js';
-import {getEndTime} from '../utils.js';
-import {prettifyTime} from '../utils.js';
-import {createElement} from "../utils.js";
+import {getEndTime} from '../utils/event.js';
+import {prettifyTime} from "../utils/common.js";
+import AbstractView from "./abstract.js";
 
 const BLANK_EVENT = {
   event: {
@@ -216,26 +216,36 @@ const createEditEventTemplate = (curEvent = {}) => {
   );
 };
 
-export default class EditEvent {
+export default class EditEvent extends AbstractView {
   constructor(event = BLANK_EVENT) {
+    super();
     this._event = event;
-    this._element = null;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._cancelClickHandler = this._cancelClickHandler.bind(this);
   }
 
   getTemplate() {
     return createEditEventTemplate(this._event);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  _cancelClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.cancelClick();
+  }
+
+  setCancelClickHandler(callback) {
+    this._callback.cancelClick = callback;
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._cancelClickHandler);
   }
 }
 
