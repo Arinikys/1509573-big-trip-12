@@ -1,6 +1,7 @@
 import DayView from "../view/day.js";
 import SortView from "../view/sort.js";
 import EditEventView from "../view/edit-event-form.js";
+import StartView from "../view/start.js";
 import EventView from "../view/event.js";
 import {render, RenderPosition, replace} from "../utils/render.js";
 
@@ -10,13 +11,24 @@ export default class Trip {
     this._tripContainer = tripContainer;
 
     this._sortComponent = new SortView();
+    this._startComponent = new StartView();
   }
 
   init(events) {
     this._events = events.slice();
+
+    if (this._events.length === 0) {
+      this._renderStart(this._events);
+      return;
+    }
+
     this._sortEvent(this._events);
     this._renderDay(this._events);
     this._renderEventList(this._events);
+  }
+
+  _renderStart() {
+    render(this._tripContainer, this._startComponent, RenderPosition.BEFOREEND);
   }
 
   _sortEvent() {
@@ -43,6 +55,14 @@ export default class Trip {
     const eventEditComponent = new EditEventView(event);
     render(eventListElement, eventComponent, RenderPosition.BEFOREEND);
 
+    const onEscKeyDown = (evt) => {
+      if (evt.key === `Escape` || evt.key === `Esc`) {
+        evt.preventDefault();
+        replaceFormToEvent();
+        document.removeEventListener(`keydown`, onEscKeyDown);
+      }
+    };
+
     const replaceEventToForm = () => {
       replace(eventEditComponent, eventComponent);
     };
@@ -53,6 +73,7 @@ export default class Trip {
 
     eventComponent.setEventClickHandler(() => {
       replaceEventToForm();
+      document.addEventListener(`keydown`, onEscKeyDown);
     });
 
     eventEditComponent.setCancelClickHandler(() => {
