@@ -1,44 +1,43 @@
 import AbstractView from "./abstract.js";
+const sort = [
+  {
+    label: `day`,
+    name: `Day`,
+    hasIcon: false,
+    isChecked: false,
+    isInput: false,
+  },
+  {
+    label: `event`,
+    name: `Event`,
+    hasIcon: false,
+    isChecked: true,
+    isInput: true,
+  },
+  {
+    label: `time`,
+    name: `Time`,
+    hasIcon: true,
+    isChecked: false,
+    isInput: true,
+  },
+  {
+    label: `price`,
+    name: `Price`,
+    hasIcon: true,
+    isChecked: false,
+    isInput: true,
+  },
+  {
+    label: `offers`,
+    name: `Offers`,
+    hasIcon: false,
+    isChecked: false,
+    isInput: false,
+  }
+];
 
 const createSortTemplate = () => {
-  const sort = [
-    {
-      label: `day`,
-      name: `Day`,
-      hasIcon: false,
-      isChecked: false,
-      isInput: false,
-    },
-    {
-      label: `event`,
-      name: `Event`,
-      hasIcon: false,
-      isChecked: true,
-      isInput: true,
-    },
-    {
-      label: `time`,
-      name: `Time`,
-      hasIcon: true,
-      isChecked: false,
-      isInput: true,
-    },
-    {
-      label: `price`,
-      name: `Price`,
-      hasIcon: true,
-      isChecked: false,
-      isInput: true,
-    },
-    {
-      label: `offers`,
-      name: `Offers`,
-      hasIcon: false,
-      isChecked: false,
-      isInput: false,
-    }
-  ];
-
   const icon = (hasIcon) => {
     return hasIcon ? `<svg class="trip-sort__direction-icon" width="8" height="10" viewBox="0 0 8 10">
       <path d="M2.888 4.852V9.694H5.588V4.852L7.91 5.068L4.238 0.00999987L0.548 5.068L2.888 4.852Z"/>

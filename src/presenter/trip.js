@@ -9,32 +9,29 @@ export default class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
 
-    this._dayComponent = new DayView();
     this._sortComponent = new SortView();
-    this._eventComponent = new EventView();
-    this._editEventComponent = new EditEventView();
   }
 
   init(events) {
     this._events = events.slice();
     this._sortEvent(this._events);
-    this._renderDay();
-    this._renderEventList();
+    this._renderDay(this._events);
+    this._renderEventList(this._events);
   }
 
   _sortEvent() {
     render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderDay() {
-    render(this._tripContainer, this._dayComponent(this._events), RenderPosition.BEFOREEND);
+  _renderDay(events) {
+    render(this._tripContainer, new DayView(events), RenderPosition.BEFOREEND);
   }
 
-  _renderEventList() {
+  _renderEventList(events) {
     const DaysElement = document.querySelectorAll(`.trip-days__item`);
     for (let dayElement of DaysElement) {
       let date = new Date(dayElement.querySelector(`.day__date`).getAttribute(`datetime`));
-      let dayEvents = this._events.filter((event) => event.startDate.getMonth() === date.getMonth() && event.startDate.getDate() === date.getDate());
+      let dayEvents = events.filter((event) => event.startDate.getMonth() === date.getMonth() && event.startDate.getDate() === date.getDate());
       for (let event of dayEvents) {
         this._renderEvent(dayElement.querySelector(`.trip-events__list`), event);
       }
@@ -42,8 +39,8 @@ export default class Trip {
   }
 
   _renderEvent(eventListElement, event) {
-    const eventComponent = this._editEventComponent(event);
-    const eventEditComponent = this._eventComponent(event);
+    const eventComponent = new EventView(event);
+    const eventEditComponent = new EditEventView(event);
     render(eventListElement, eventComponent, RenderPosition.BEFOREEND);
 
     const replaceEventToForm = () => {
