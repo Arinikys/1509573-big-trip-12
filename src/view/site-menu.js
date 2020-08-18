@@ -9,7 +9,7 @@ const createMenuControlsTemplate = () => {
   );
 };
 
-export default class MenuControls extends AbstractView{
+export default class MenuControls extends AbstractView {
   getTemplate() {
     return createMenuControlsTemplate();
   }
