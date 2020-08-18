@@ -22,7 +22,7 @@ export default class Trip {
       return;
     }
 
-    this._sortEvent(this._events);
+    this._renderSort();
     this._renderDay(this._events);
     this._renderEventList(this._events);
   }
@@ -31,7 +31,7 @@ export default class Trip {
     render(this._tripContainer, this._startComponent, RenderPosition.BEFOREEND);
   }
 
-  _sortEvent() {
+  _renderSort() {
     render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
