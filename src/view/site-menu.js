@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 
 const createMenuControlsTemplate = () => {
   return (
@@ -9,24 +9,8 @@ const createMenuControlsTemplate = () => {
   );
 };
 
-export default class MenuControls {
-  constructor() {
-    this._element = null;
-  }
-
+export default class MenuControls extends AbstractView {
   getTemplate() {
     return createMenuControlsTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

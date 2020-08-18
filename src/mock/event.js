@@ -1,4 +1,4 @@
-import {getRandomInteger} from '../utils.js';
+import {getRandomInteger} from '../utils/common.js';
 import {OPTIONS} from '../const.js';
 
 const TRIP_EVENT = [
