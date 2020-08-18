@@ -14,12 +14,12 @@ export default class Trip {
 
   init(events) {
     this._events = events.slice();
-    this._sortEvent(this._events);
+    this._renderSort();
     this._renderDay(this._events);
     this._renderEventList(this._events);
   }
 
-  _sortEvent() {
+  _renderSort() {
     render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
