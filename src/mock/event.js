@@ -1,49 +1,6 @@
 import {getRandomInteger} from '../utils/common.js';
-import {OPTIONS} from '../const.js';
+import {OPTIONS, TRIP_EVENT, DESTINATION_CITY} from '../const.js';
 
-const TRIP_EVENT = [
-  {
-    name: `Taxi`,
-    type: `moving`
-  },
-  {
-    name: `Bus`,
-    type: `moving`
-  },
-  {
-    name: `Train`,
-    type: `moving`
-  },
-  {
-    name: `Ship`,
-    type: `moving`
-  },
-  {
-    name: `Transport`,
-    type: `moving`
-  },
-  {
-    name: `Drive`,
-    type: `moving`
-  },
-  {
-    name: `Flight`,
-    type: `moving`
-  },
-  {
-    name: `Check-in`,
-    type: `arrival`
-  },
-  {
-    name: `Sightseeing`,
-    type: `arrival`
-  },
-  {
-    name: `Restaurant`,
-    type: `arrival`
-  }
-];
-const DESTINATION_CITY = [`Vienna`, `Brussels`, `London`, `Budapest`, `Berlin`, `Amsterdam`, `Athens`, `Copenhagen`, `Madrid`, `Rome`, `Valletta`, `Tallinn`, `Paris`, `Stockholm`];
 const MIN_PRICE = 10;
 const MAX_PRICE = 200;
 const DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -124,6 +81,8 @@ const generatePhotos = () => {
   return photos;
 };
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 export const generateEvent = () => {
   return {
     event: generateEventType(),
@@ -132,9 +91,11 @@ export const generateEvent = () => {
     duration: generateDuration(),
     price: getRandomInteger(MIN_PRICE, MAX_PRICE),
     options: generateOptions(`moving`),
+    isFav: Boolean(getRandomInteger(0, 1)),
     destination: {
       descr: destinationDescription(),
       photo: generatePhotos()
-    }
+    },
+    id: generateId()
   };
 };

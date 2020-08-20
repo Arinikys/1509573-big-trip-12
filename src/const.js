@@ -40,3 +40,46 @@ export const OPTIONS = [
     eventType: `arrival`
   }
 ];
+export const TRIP_EVENT = [
+  {
+    name: `Taxi`,
+    type: `moving`
+  },
+  {
+    name: `Bus`,
+    type: `moving`
+  },
+  {
+    name: `Train`,
+    type: `moving`
+  },
+  {
+    name: `Ship`,
+    type: `moving`
+  },
+  {
+    name: `Transport`,
+    type: `moving`
+  },
+  {
+    name: `Drive`,
+    type: `moving`
+  },
+  {
+    name: `Flight`,
+    type: `moving`
+  },
+  {
+    name: `Check-in`,
+    type: `arrival`
+  },
+  {
+    name: `Sightseeing`,
+    type: `arrival`
+  },
+  {
+    name: `Restaurant`,
+    type: `arrival`
+  }
+];
+export const DESTINATION_CITY = [`Vienna`, `Brussels`, `London`, `Budapest`, `Berlin`, `Amsterdam`, `Athens`, `Copenhagen`, `Madrid`, `Rome`, `Valletta`, `Tallinn`, `Paris`, `Stockholm`];

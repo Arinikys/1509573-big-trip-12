@@ -1,21 +1,24 @@
 import DayView from "../view/day.js";
 import SortView from "../view/sort.js";
-import EditEventView from "../view/edit-event-form.js";
 import StartView from "../view/start.js";
-import EventView from "../view/event.js";
-import {render, RenderPosition, replace} from "../utils/render.js";
+import EventPresenter from "./event.js";
+import {updateItem} from "../utils/common.js";
+import {render, RenderPosition} from "../utils/render.js";
 
 
 export default class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
+    this._eventPresenter = {};
 
     this._sortComponent = new SortView();
     this._startComponent = new StartView();
+    this._handleEventChange = this._handleEventChange.bind(this);
   }
 
   init(events) {
     this._events = events.slice();
+    this._sourcedEvent = events.slice();
 
     if (this._events.length === 0) {
       this._renderStart(this._events);
@@ -51,37 +54,21 @@ export default class Trip {
   }
 
   _renderEvent(eventListElement, event) {
-    const eventComponent = new EventView(event);
-    const eventEditComponent = new EditEventView(event);
-    render(eventListElement, eventComponent, RenderPosition.BEFOREEND);
+    const eventPresenter = new EventPresenter(eventListElement, this._handleEventChange);
+    eventPresenter.init(event);
+    this._eventPresenter[event.id] = eventPresenter;
+  }
 
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        evt.preventDefault();
-        replaceFormToEvent();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
+  _handleEventChange(updatedEvent) {
+    this._events = updateItem(this._events, updatedEvent);
+    this._sourcedEvent = updateItem(this._sourcedEvent, updatedEvent);
+    this._eventPresenter[updatedEvent.id].init(updatedEvent);
+  }
 
-    const replaceEventToForm = () => {
-      replace(eventEditComponent, eventComponent);
-    };
-
-    const replaceFormToEvent = () => {
-      replace(eventComponent, eventEditComponent);
-    };
-
-    eventComponent.setEventClickHandler(() => {
-      replaceEventToForm();
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-    eventEditComponent.setCancelClickHandler(() => {
-      replaceFormToEvent();
-    });
-
-    eventEditComponent.setFormSubmitHandler(() => {
-      replaceFormToEvent();
-    });
+  _clearTaskList() {
+    Object
+      .values(this._eventPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._eventPresenter = {};
   }
 }

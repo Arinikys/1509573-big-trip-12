@@ -76,12 +76,11 @@ export default class Event extends AbstractView {
   getTemplate() {
     return createEventTemplate(this._event);
   }
-
   _eventClickHandler(evt) {
     evt.preventDefault();
     this._callback.eventClick();
   }
-
+  
   setEventClickHandler(callback) {
     this._callback.eventClick = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._eventClickHandler);
