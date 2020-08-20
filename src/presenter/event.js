@@ -12,6 +12,7 @@ export default class Event {
     this._eventEditComponent = null;
 
     this._handleEditClick = this._handleEditClick.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
@@ -19,24 +20,26 @@ export default class Event {
   init(event) {
     this._event = event;
 
+    const prevEventComponent = this._eventComponent;
+    const prevEventEditComponent = this._eventEditComponent;
+
     this._eventComponent = new EventView(event);
     this._eventEditComponent = new EditEventView(event);
 
     this._eventComponent.setEventClickHandler(this._handleEditClick);
+    this._eventEditComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
 
-    render(this._eventsListContainer, this._eventComponent, RenderPosition.BEFOREEND);
-  }
+    if (prevEventComponent === null || prevEventEditComponent === null) {
+      render(this._eventsListContainer, this._eventComponent, RenderPosition.BEFOREEND);
+      return;
+    }
 
-  rerender() {
-    const prevEventComponent = this._eventComponent;
-    const prevEventEditComponent = this._eventEditComponent;
-
-    if (this._eventsListContainer.getElement().contains(prevEventComponent.getElement())) {
+    if (this._eventsListContainer.contains(prevEventComponent.getElement())) {
       replace(this._eventComponent, prevEventComponent);
     }
 
-    if (this._eventsListContainer.getElement().contains(prevEventEditComponent.getElement())) {
+    if (this._eventsListContainer.contains(prevEventComponent.getElement())) {
       replace(this._eventEditComponent, prevEventEditComponent);
     }
 
@@ -70,7 +73,20 @@ export default class Event {
     this._replaceEventToForm();
   }
 
-  _handleFormSubmit() {
+  _handleFormSubmit(event) {
+    this._changeData(event);
     this._replaceFormToEvent();
+  }
+
+  _handleFavoriteClick() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._event,
+        {
+          isFavorite: !this._event.isFavorite
+        }
+      )
+    );
   }
 }

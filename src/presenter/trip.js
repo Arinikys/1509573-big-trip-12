@@ -65,7 +65,7 @@ export default class Trip {
     this._eventPresenter[updatedEvent.id].init(updatedEvent);
   }
 
-  _clearTaskList() {
+  _clearEventList() {
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.destroy());

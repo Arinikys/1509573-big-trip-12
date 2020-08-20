@@ -178,6 +178,7 @@ export default class EditEvent extends AbstractView {
     super();
     this._event = event;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -187,6 +188,16 @@ export default class EditEvent extends AbstractView {
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit();
+  }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
   }
 
   setFormSubmitHandler(callback) {
