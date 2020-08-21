@@ -35,11 +35,11 @@ export default class Event {
       return;
     }
 
-    if (this._eventsListContainer.contains(prevEventComponent.getElement())) {
+    if (this._eventsListContainer.getElement().contains(prevEventComponent.getElement())) {
       replace(this._eventComponent, prevEventComponent);
     }
 
-    if (this._eventsListContainer.contains(prevEventComponent.getElement())) {
+    if (this._eventsListContainer.getElement().contains(prevEventEditComponent.getElement())) {
       replace(this._eventEditComponent, prevEventEditComponent);
     }
 
@@ -79,14 +79,6 @@ export default class Event {
   }
 
   _handleFavoriteClick() {
-    this._changeData(
-      Object.assign(
-        {},
-        this._event,
-        {
-          isFavorite: !this._event.isFavorite
-        }
-      )
-    );
+    this._changeData(Object.assign({}, this._event, {isFavorite: !this._event.isFavorite}));
   }
 }

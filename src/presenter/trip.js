@@ -1,8 +1,10 @@
 import DayView from "../view/day.js";
 import SortView from "../view/sort.js";
 import StartView from "../view/start.js";
+import EventsListContainerView from "../view/events-list.js";
 import EventPresenter from "./event.js";
 import {updateItem} from "../utils/common.js";
+import {createDateArr, crateDateEvensList} from '../utils/event.js';
 import {render, RenderPosition} from "../utils/render.js";
 
 
@@ -26,8 +28,7 @@ export default class Trip {
     }
 
     this._renderSort();
-    this._renderDay(this._events);
-    this._renderEventList(this._events);
+    this._renderTrip(this._events);
   }
 
   _renderStart() {
@@ -38,17 +39,20 @@ export default class Trip {
     render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderDay(events) {
-    render(this._tripContainer, new DayView(events), RenderPosition.BEFOREEND);
-  }
+  _renderTrip(events) {
+    const dateArr = createDateArr(events);
+    let count = 0;
+    for (let day of dateArr) {
+      count++;
+      const dayElem = new DayView(new Date(day), count);
+      render(this._tripContainer, dayElem, RenderPosition.BEFOREEND);
 
-  _renderEventList(events) {
-    const DaysElement = document.querySelectorAll(`.trip-days__item`);
-    for (let dayElement of DaysElement) {
-      let date = new Date(dayElement.querySelector(`.day__date`).getAttribute(`datetime`));
-      let dayEvents = events.filter((event) => event.startDate.getMonth() === date.getMonth() && event.startDate.getDate() === date.getDate());
-      for (let event of dayEvents) {
-        this._renderEvent(dayElement.querySelector(`.trip-events__list`), event);
+      const eventsListContainer = new EventsListContainerView();
+      render(dayElem, eventsListContainer, RenderPosition.BEFOREEND);
+
+      const dateEvensList = crateDateEvensList(events, new Date(day));
+      for (let event of dateEvensList) {
+        this._renderEvent(eventsListContainer, event);
       }
     }
   }
