@@ -90,7 +90,7 @@ export const generateEvent = () => {
     startDate: generateStartDate(),
     duration: generateDuration(),
     price: getRandomInteger(MIN_PRICE, MAX_PRICE),
-    options: generateOptions(`moving`),
+    options: generateOptions(`transfer`),
     isFav: Boolean(getRandomInteger(0, 1)),
     destination: {
       descr: destinationDescription(),

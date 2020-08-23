@@ -2,84 +2,84 @@ export const OPTIONS = [
   {
     name: `Add luggage`,
     price: 30,
-    eventType: `moving`
+    eventType: `transfer`
   },
   {
     name: `Switch to comfort`,
     price: 100,
-    eventType: `moving`
+    eventType: `transfer`
   },
   {
     name: `Add meal`,
     price: 15,
-    eventType: `moving`
+    eventType: `transfer`
   },
   {
     name: `Choose seats`,
     price: 5,
-    eventType: `moving`
+    eventType: `transfer`
   },
   {
     name: `Travel by train`,
     price: 40,
-    eventType: `moving`
+    eventType: `transfer`
   },
   {
     name: `Add breakfast`,
     price: 50,
-    eventType: `arrival`
+    eventType: `activity`
   },
   {
     name: `Book tickets`,
     price: 40,
-    eventType: `arrival`
+    eventType: `activity`
   },
   {
     name: `Lunch in city`,
     price: 30,
-    eventType: `arrival`
+    eventType: `activity`
   }
 ];
 export const TRIP_EVENT = [
   {
     name: `Taxi`,
-    type: `moving`
+    type: `transfer`
   },
   {
     name: `Bus`,
-    type: `moving`
+    type: `transfer`
   },
   {
     name: `Train`,
-    type: `moving`
+    type: `transfer`
   },
   {
     name: `Ship`,
-    type: `moving`
+    type: `transfer`
   },
   {
     name: `Transport`,
-    type: `moving`
+    type: `transfer`
   },
   {
     name: `Drive`,
-    type: `moving`
+    type: `transfer`
   },
   {
     name: `Flight`,
-    type: `moving`
+    type: `transfer`
   },
   {
     name: `Check-in`,
-    type: `arrival`
+    type: `activity`
   },
   {
     name: `Sightseeing`,
-    type: `arrival`
+    type: `activity`
   },
   {
     name: `Restaurant`,
-    type: `arrival`
+    type: `activity`
   }
 ];
 export const DESTINATION_CITY = [`Vienna`, `Brussels`, `London`, `Budapest`, `Berlin`, `Amsterdam`, `Athens`, `Copenhagen`, `Madrid`, `Rome`, `Valletta`, `Tallinn`, `Paris`, `Stockholm`];
