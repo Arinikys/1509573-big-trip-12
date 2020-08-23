@@ -1,7 +1,7 @@
 import {OPTIONS, TRIP_EVENT, DESTINATION_CITY} from '../const.js';
 import {getEndTime} from '../utils/event.js';
 import {prettifyTime} from "../utils/common.js";
-import AbstractView from "./abstract.js";
+import SmartView from "./smart.js";
 
 const BLANK_EVENT = {
   event: {
@@ -173,7 +173,7 @@ const createEditEventTemplate = (curEvent = {}) => {
     </form>`);
 };
 
-export default class EditEvent extends AbstractView {
+export default class EditEvent extends SmartView {
   constructor(event = BLANK_EVENT) {
     super();
     this._event = event;

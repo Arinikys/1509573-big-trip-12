@@ -16,6 +16,7 @@ export default class Trip {
     this._sortComponent = new SortView();
     this._startComponent = new StartView();
     this._handleEventChange = this._handleEventChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(events) {
@@ -58,9 +59,15 @@ export default class Trip {
   }
 
   _renderEvent(eventListElement, event) {
-    const eventPresenter = new EventPresenter(eventListElement, this._handleEventChange);
+    const eventPresenter = new EventPresenter(eventListElement, this._handleEventChange, this._handleModeChange);
     eventPresenter.init(event);
     this._eventPresenter[event.id] = eventPresenter;
+  }
+
+  _handleModeChange() {
+    Object
+      .values(this._eventPresenter)
+      .forEach((presenter) => presenter.resetView());
   }
 
   _handleEventChange(updatedEvent) {
