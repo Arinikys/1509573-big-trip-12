@@ -91,7 +91,7 @@ export const generateEvent = () => {
     duration: generateDuration(),
     price: getRandomInteger(MIN_PRICE, MAX_PRICE),
     options: generateOptions(`transfer`),
-    isFav: Boolean(getRandomInteger(0, 1)),
+    isFavorite: Boolean(getRandomInteger(0, 1)),
     destination: {
       descr: destinationDescription(),
       photo: generatePhotos()

@@ -54,7 +54,7 @@ export default class Event {
   }
 
   resetView() {
-    if (this._mode != Mode.DEFAULT) {
+    if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToEvent();
     }
   }

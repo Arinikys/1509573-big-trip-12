@@ -15,12 +15,12 @@ const BLANK_EVENT = {
     minute: 0
   },
   price: 0,
-  isFav: true,
+  isFavorite: true,
   options: []
 };
 
 const createEditEventTemplate = (curEvent = {}) => {
-  const {event, destinationCity, startDate, duration, price, isFav, options} = curEvent;
+  const {event, destinationCity, startDate, duration, price, isFavorite, options} = curEvent;
 
   const prep = event.type === `activity`
     ? `in`
@@ -149,7 +149,7 @@ const createEditEventTemplate = (curEvent = {}) => {
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
 
-        <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFav ? `checked` : ``}>
+        <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
         <label class="event__favorite-btn" for="event-favorite-1">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
