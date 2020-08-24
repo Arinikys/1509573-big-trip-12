@@ -280,16 +280,15 @@ export default class EditEvent extends SmartView {
   }
 
   static parseEventToData(curEvent) {
-    return Object.assign({}, curEvent,
-      {
-        dataEventType: curEvent.event.type,
-        dataEventName: curEvent.event.name,
-        dataDestinationCity: curEvent.destinationCity,
-        dataDestination: {
-          descr: curEvent.destination.descr,
-          photo: curEvent.destination.photo
-        }
-      });
+    return Object.assign({}, curEvent,{
+      dataEventType: curEvent.event.type,
+      dataEventName: curEvent.event.name,
+      dataDestinationCity: curEvent.destinationCity,
+      dataDestination: {
+        descr: curEvent.destination.descr,
+        photo: curEvent.destination.photo
+      }
+    });
   }
 
   static parseDataToEvent(data) {
@@ -299,7 +298,7 @@ export default class EditEvent extends SmartView {
     data.destinationCity = data.dataDestinationCity;
     data.destination.descr = data.dataDestination.descr;
     data.destination.photo = data.dataDestination.photo;
-    
+
     delete data.dataEventType;
     delete data.dataEventName;
     delete data.dataDestinationCity;
