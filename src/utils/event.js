@@ -21,3 +21,8 @@ export const createDateArr = (events) => {
 export const crateDateEvensList = (events, date) => {
   return events.filter((event) => event.startDate.getMonth() === date.getMonth() && event.startDate.getDate() === date.getDate());
 };
+
+export const getEventType = (events, name) => {
+  let type = ``;
+  return type;
+};

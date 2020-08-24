@@ -20,9 +20,9 @@ const BLANK_EVENT = {
 };
 
 const createEditEventTemplate = (curEvent = {}) => {
-  const {event, destinationCity, startDate, duration, price, isFavorite, options} = curEvent;
+  const {startDate, duration, price, isFavorite, options, dataEventType, dataEventName, dataDestinationCity} = curEvent;
 
-  const prep = event.type === `activity`
+  const prep = dataEventType === `activity`
     ? `in`
     : `to`;
 
@@ -39,7 +39,7 @@ const createEditEventTemplate = (curEvent = {}) => {
     let optionList = ``;
     const availableOptionList = getAvailableOption();
     for (let option of OPTIONS) {
-      if (event.type === option.eventType) {
+      if (dataEventType === option.eventType) {
         let optionNameLC = option.name.toLowerCase();
         optionList += `<div class="event__offer-selector">
           <input
@@ -100,7 +100,7 @@ const createEditEventTemplate = (curEvent = {}) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${event.name.toLowerCase()}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${dataEventName.toLowerCase()}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -118,9 +118,9 @@ const createEditEventTemplate = (curEvent = {}) => {
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            ${event.name} ${prep}
+            ${dataEventName} ${prep}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationCity}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${dataDestinationCity}" list="destination-list-1">
           <datalist id="destination-list-1">
             ${destinationCityTemplate}
           </datalist>
@@ -176,23 +176,49 @@ const createEditEventTemplate = (curEvent = {}) => {
 export default class EditEvent extends SmartView {
   constructor(event = BLANK_EVENT) {
     super();
-    this._event = event;
+    this._data = EditEvent.parseEventToData(event);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+
+    this._eventNameTypeHandler = this._eventNameTypeHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createEditEventTemplate(this._event);
+    return createEditEventTemplate(this._data);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._event);
+    this._callback.formSubmit(EditEvent.parseEventToData(this._data));
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  _setInnerHandlers() {
+    const eventTypeRadio = this.getElement().querySelectorAll(`input[name="event-type"]`);
+    for (let radio of eventTypeRadio) {
+      radio.addEventListener(`change`, this._eventNameTypeHandler);
+    }
   }
 
   _favoriteClickHandler(evt) {
     evt.preventDefault();
     this._callback.favoriteClick();
+  }
+
+  _eventNameTypeHandler(evt) {
+    let dataEventName = evt.target.value;
+    dataEventName = dataEventName.charAt(0).toUpperCase() + dataEventName.substr(1).toLowerCase();
+    let dataEventType = TRIP_EVENT.filter((item) => item.name === dataEventName)[0].type;
+    this.updateData({
+      dataEventName,
+      dataEventType
+    });
   }
 
   setFavoriteClickHandler(callback) {
@@ -203,6 +229,15 @@ export default class EditEvent extends SmartView {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  static parseEventToData(curEvent) {
+    return Object.assign({}, curEvent,
+      {
+        dataEventType: curEvent.event.type,
+        dataEventName: curEvent.event.name,
+        dataDestinationCity: curEvent.destinationCity
+      });
   }
 }
 
