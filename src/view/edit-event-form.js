@@ -221,7 +221,7 @@ export default class EditEvent extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(EditEvent.parseEventToData(this._data));
+    this._callback.formSubmit(EditEvent.parseDataToEvent(this._data));
   }
 
   restoreHandlers() {
@@ -275,6 +275,10 @@ export default class EditEvent extends SmartView {
     this.getElement().addEventListener(`submit`, this._formSubmitHandler);
   }
 
+  reset(event) {
+    this.updateData(EditEvent.parseEventToData(event));
+  }
+
   static parseEventToData(curEvent) {
     return Object.assign({}, curEvent,
       {
@@ -286,6 +290,21 @@ export default class EditEvent extends SmartView {
           photo: curEvent.destination.photo
         }
       });
+  }
+
+  static parseDataToEvent(data) {
+    data = Object.assign({}, data);
+    data.event.type = data.dataEventType;
+    data.event.name = data.dataEventName;
+    data.destinationCity = data.dataDestinationCity;
+    data.destination.descr = data.dataDestination.descr;
+    data.destination.photo = data.dataDestination.photo;
+    
+    delete data.dataEventType;
+    delete data.dataEventName;
+    delete data.dataDestinationCity;
+
+    return data;
   }
 }
 
