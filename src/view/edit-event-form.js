@@ -280,7 +280,7 @@ export default class EditEvent extends SmartView {
   }
 
   static parseEventToData(curEvent) {
-    return Object.assign({}, curEvent,{
+    return Object.assign({}, curEvent, {
       dataEventType: curEvent.event.type,
       dataEventName: curEvent.event.name,
       dataDestinationCity: curEvent.destinationCity,
