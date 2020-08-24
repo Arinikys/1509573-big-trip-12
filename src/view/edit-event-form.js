@@ -20,7 +20,7 @@ const BLANK_EVENT = {
 };
 
 const createEditEventTemplate = (curEvent = {}) => {
-  const {startDate, duration, price, isFavorite, options, dataEventType, dataEventName, dataDestinationCity} = curEvent;
+  const {startDate, duration, price, isFavorite, options, destination, dataEventType, dataEventName, dataDestinationCity} = curEvent;
 
   const prep = dataEventType === `activity`
     ? `in`
@@ -34,6 +34,30 @@ const createEditEventTemplate = (curEvent = {}) => {
     }
     return availableOptionName;
   };
+
+  const createDescrPhotoTemplate = (photoList) => {
+    let descrPhotoList = ``;
+    for (let photo of photoList) {
+      descrPhotoList += `<img class="event__photo" src="${photo}" alt="Event photo">`;
+    }
+    return descrPhotoList;
+  };
+
+  const createDescriptionTemplate = () => {
+    if (!destination.descr && !destination.photo) {
+      return ``;
+    }
+    return `<section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      ${destination.descr ? `<p class="event__destination-description">${destination.descr}</p>` : ``}
+      <div class="event__photos-container">
+        <div class="event__photos-tape">
+         ${createDescrPhotoTemplate(destination.photo)}
+        </div>
+      </div>
+    </section>`;
+  };
+  const descriptionTemplate = createDescriptionTemplate();
 
   const createOptionTemplate = () => {
     let optionList = ``;
@@ -170,6 +194,7 @@ const createEditEventTemplate = (curEvent = {}) => {
           </div>
         </section>
       </section>
+      ${descriptionTemplate}
     </form>`);
 };
 
