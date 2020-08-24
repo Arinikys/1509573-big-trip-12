@@ -1,5 +1,5 @@
 import {OPTIONS, TRIP_EVENT, DESTINATION_CITY} from '../const.js';
-import {getEndTime} from '../utils/event.js';
+import {getEndTime, generateDescription, generatePhotos} from '../utils/event.js';
 import {prettifyTime} from "../utils/common.js";
 import SmartView from "./smart.js";
 
@@ -16,11 +16,15 @@ const BLANK_EVENT = {
   },
   price: 0,
   isFavorite: true,
-  options: []
+  options: [],
+  destination: {
+    descr: ``,
+    photo: []
+  },
 };
 
 const createEditEventTemplate = (curEvent = {}) => {
-  const {startDate, duration, price, isFavorite, options, destination, dataEventType, dataEventName, dataDestinationCity} = curEvent;
+  const {startDate, duration, price, isFavorite, options, dataDestination, dataEventType, dataEventName, dataDestinationCity} = curEvent;
 
   const prep = dataEventType === `activity`
     ? `in`
@@ -44,15 +48,15 @@ const createEditEventTemplate = (curEvent = {}) => {
   };
 
   const createDescriptionTemplate = () => {
-    if (!destination.descr && !destination.photo) {
+    if (!dataDestination.descr && !dataDestination.photo) {
       return ``;
     }
     return `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      ${destination.descr ? `<p class="event__destination-description">${destination.descr}</p>` : ``}
+      ${dataDestination.descr ? `<p class="event__destination-description">${dataDestination.descr}</p>` : ``}
       <div class="event__photos-container">
         <div class="event__photos-tape">
-         ${createDescrPhotoTemplate(destination.photo)}
+         ${createDescrPhotoTemplate(dataDestination.photo)}
         </div>
       </div>
     </section>`;
@@ -206,6 +210,7 @@ export default class EditEvent extends SmartView {
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
 
     this._eventNameTypeHandler = this._eventNameTypeHandler.bind(this);
+    this._eventCityHandler = this._eventCityHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -229,6 +234,9 @@ export default class EditEvent extends SmartView {
     for (let radio of eventTypeRadio) {
       radio.addEventListener(`change`, this._eventNameTypeHandler);
     }
+    this.getElement()
+      .querySelector(`#event-destination-1`)
+      .addEventListener(`change`, this._eventCityHandler);
   }
 
   _favoriteClickHandler(evt) {
@@ -236,7 +244,18 @@ export default class EditEvent extends SmartView {
     this._callback.favoriteClick();
   }
 
+  _eventCityHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      dataDestination: {
+        descr: generateDescription(),
+        photo: generatePhotos()
+      }
+    });
+  }
+
   _eventNameTypeHandler(evt) {
+    evt.preventDefault();
     let dataEventName = evt.target.value;
     dataEventName = dataEventName.charAt(0).toUpperCase() + dataEventName.substr(1).toLowerCase();
     let dataEventType = TRIP_EVENT.filter((item) => item.name === dataEventName)[0].type;
@@ -261,7 +280,11 @@ export default class EditEvent extends SmartView {
       {
         dataEventType: curEvent.event.type,
         dataEventName: curEvent.event.name,
-        dataDestinationCity: curEvent.destinationCity
+        dataDestinationCity: curEvent.destinationCity,
+        dataDestination: {
+          descr: curEvent.destination.descr,
+          photo: curEvent.destination.photo
+        }
       });
   }
 }
