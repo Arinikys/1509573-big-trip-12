@@ -247,6 +247,7 @@ export default class EditEvent extends SmartView {
   _eventCityHandler(evt) {
     evt.preventDefault();
     this.updateData({
+      dataDestinationCity: evt.target.value,
       dataDestination: {
         descr: generateDescription(),
         photo: generatePhotos()
