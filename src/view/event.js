@@ -2,7 +2,7 @@ import AbstractView from "./abstract.js";
 import {getEndTime} from '../utils/event.js';
 import {prettifyTime} from "../utils/common.js";
 
-const EVENT_TYPE_NAME = `arrival`;
+const EVENT_TYPE_NAME = `activity`;
 const MAX_VIS_OPTION_COUNT = 3;
 
 const createEventTemplate = (curEvent) => {
