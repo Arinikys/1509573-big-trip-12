@@ -112,7 +112,7 @@ export default class Event {
   _handleFavoriteClick() {
     this._changeData(
         UserAction.UPDATE_EVENT,
-        UpdateType.MINOR,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._event,

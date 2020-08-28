@@ -16,6 +16,8 @@ export default class Trip {
     this._eventsModel = eventsModel;
     this._filterModel = filterModel;
     this._eventPresenter = {};
+    this._dayList = [];
+
 
     this._sortComponent = new SortView();
     this._startComponent = new StartView();
@@ -67,6 +69,7 @@ export default class Trip {
     let dateArr = createDateArr(this._getEvents());
     dateArr.forEach((day, count) => {
       const dayElem = new DayView(new Date(day), ++count);
+      this._dayList.push(dayElem);
       render(this._tripContainer, dayElem, RenderPosition.BEFOREEND);
 
       const eventsListContainer = new EventsListContainerView();
@@ -126,14 +129,18 @@ export default class Trip {
     }
   }
 
-  _clearTrip(resetSortType) {
+  _clearTrip() {
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.destroy());
     this._eventPresenter = {};
+    for (let day of this._dayList) {
+      remove(day);
+      day.removeElement();
+    }
+    this._dayList = [];
     remove(this._sortComponent);
     remove(this._startComponent);
     this._eventNewPresenter.destroy();
-    // resetSortType
   }
 }
