@@ -1,8 +1,10 @@
 import MenuControlsView from "./view/site-menu.js";
 import TripInfoView from "./view/trip-info.js";
-import FiltersView from "./view/filter.js";
-import {generateEvent} from "./mock/event.js";
+import EventsModel from "./model/events.js";
+import FilterModel from "./model/filter.js";
 import TripPresenter from "./presenter/trip.js";
+import FilterPresenter from "./presenter/filter.js";
+import {generateEvent} from "./mock/event.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 const EVENTS_COUNT = 20;
@@ -15,14 +17,25 @@ events.sort((a, b) => {
   return dateA - dateB;
 });
 
+const eventsModel = new EventsModel();
+eventsModel.setEvents(events);
+
+const filterModel = new FilterModel();
+
 const tripMainElement = document.querySelector(`.trip-main`);
 render(tripMainElement, new TripInfoView(), RenderPosition.AFTERBEGIN);
 
 const tripControlElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
 render(tripControlElement, new MenuControlsView(), RenderPosition.BEFOREEND);
-render(tripControlElement, new FiltersView(), RenderPosition.BEFOREEND);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
-const tripPresenter = new TripPresenter(tripEventsElement);
+const tripPresenter = new TripPresenter(tripEventsElement, eventsModel, filterModel);
+const filterPresenter = new FilterPresenter(tripControlElement, filterModel, eventsModel);
 
-tripPresenter.init(events);
+tripPresenter.init();
+filterPresenter.init();
+
+document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  tripPresenter.createEvent();
+});
