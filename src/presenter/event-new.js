@@ -1,5 +1,4 @@
 import EventEditView from "../view/edit-event-form.js";
-import {generateId} from "../utils/event.js";
 import {remove, render, RenderPosition} from "../utils/render.js";
 import {UserAction, UpdateType} from "../const.js";
 
@@ -40,11 +39,11 @@ export default class EventNew {
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
-  _handleFormSubmit(task) {
+  _handleFormSubmit(event) {
     this._changeData(
         UserAction.ADD_EVENT,
         UpdateType.MINOR,
-        Object.assign({id: generateId()}, task)
+        event
     );
     this.destroy();
   }

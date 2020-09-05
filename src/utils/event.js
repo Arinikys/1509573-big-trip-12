@@ -1,7 +1,5 @@
 import {TRIP_EVENT} from "../const";
 
-export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
-
 export const getEndTime = (startTime, duration)=> {
   const endTime = new Date(startTime);
   endTime.setMinutes(endTime.getMinutes() + duration.minute);
@@ -51,4 +49,9 @@ export const getPrep = (eventName) => {
   return tripEvent[0].type === `activity`
     ? `in`
     : `to`;
+};
+
+
+export const decorateName = (name) => {
+  return name.charAt(0).toUpperCase() + name.substr(1).toLowerCase();
 };

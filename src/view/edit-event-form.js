@@ -1,5 +1,5 @@
 import {TRIP_EVENT} from '../const.js';
-import {getEndTime, generateDescription, generatePhotos, getPrep} from '../utils/event.js';
+import {getEndTime, generateDescription, generatePhotos, getPrep, decorateName} from '../utils/event.js';
 import {prettifyTime} from "../utils/common.js";
 import SmartView from "./smart.js";
 
@@ -24,6 +24,7 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
   const {startDate, duration, price, isFavorite, options, dataDestination, dataEventName, dataDestinationCity} = curEvent;
 
   const prep = getPrep(dataEventName);
+  const decoratedDataEventName = decorateName(dataEventName);
 
   const getAvailableOption = ()=> {
     const availableOptionName = new Set();
@@ -122,7 +123,7 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${dataEventName.toLowerCase()}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${dataEventName}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -140,7 +141,7 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            ${dataEventName} ${prep}
+            ${decoratedDataEventName} ${prep}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${dataDestinationCity}" list="destination-list-1">
           <datalist id="destination-list-1">
@@ -205,7 +206,7 @@ export default class EditEvent extends SmartView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
 
-    this._eventNameTypeHandler = this._eventNameTypeHandler.bind(this);
+    this._eventNameHandler = this._eventNameHandler.bind(this);
     this._eventCityHandler = this._eventCityHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._setInnerHandlers();
@@ -233,7 +234,7 @@ export default class EditEvent extends SmartView {
   _setInnerHandlers() {
     const eventTypeRadio = this.getElement().querySelectorAll(`input[name="event-type"]`);
     for (let radio of eventTypeRadio) {
-      radio.addEventListener(`change`, this._eventNameTypeHandler);
+      radio.addEventListener(`change`, this._eventNameHandler);
     }
     this.getElement()
       .querySelector(`#event-destination-1`)
@@ -256,14 +257,12 @@ export default class EditEvent extends SmartView {
     });
   }
 
-  _eventNameTypeHandler(evt) {
+  _eventNameHandler(evt) {
     evt.preventDefault();
     let dataEventName = evt.target.value;
-    dataEventName = dataEventName.charAt(0).toUpperCase() + dataEventName.substr(1).toLowerCase();
-    let dataEventType = TRIP_EVENT.filter((item) => item.name === dataEventName)[0].type;
+    dataEventName = dataEventName.toLowerCase();
     this.updateData({
-      dataEventName,
-      dataEventType
+      dataEventName
     });
   }
 
@@ -311,7 +310,7 @@ export default class EditEvent extends SmartView {
 
     delete data.dataEventName;
     delete data.dataDestinationCity;
-
+    delete data.dataDestination;
     return data;
   }
 }
