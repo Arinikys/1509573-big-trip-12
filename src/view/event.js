@@ -1,23 +1,20 @@
 import AbstractView from "./abstract.js";
-import {getEndTime} from '../utils/event.js';
+import {getEndTime, getPrep} from '../utils/event.js';
 import {prettifyTime} from "../utils/common.js";
 
-const EVENT_TYPE_NAME = `activity`;
 const MAX_VIS_OPTION_COUNT = 3;
 
 const createEventTemplate = (curEvent) => {
-  const {event, destinationCity, startDate, duration, price, options} = curEvent;
+  const {name, destinationCity, startDate, duration, price, options} = curEvent;
 
-  const prep = event.type === EVENT_TYPE_NAME
-    ? `in`
-    : `to`;
+  const prep = getPrep(name);
 
   const createOptionTemplate = () => {
     let optionList = ``;
     if (options.length > 0) {
       for (let option of options.slice(0, MAX_VIS_OPTION_COUNT)) {
         optionList += `<li class="event__offer">
-          <span class="event__offer-title">${option.name}</span>
+          <span class="event__offer-title">${option.title}</span>
           &plus; &euro; &nbsp;<span class="event__offer-price">${option.price}</span>
           </li>`;
       }
@@ -28,19 +25,20 @@ const createEventTemplate = (curEvent) => {
   const optionTemplate = createOptionTemplate(options);
 
   const endDate = getEndTime(startDate, duration);
+  const newStartDate = new Date(startDate);
 
   return (
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${event.name.toLowerCase()}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${name.toLowerCase()}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${event.name} ${prep} ${destinationCity}</h3>
+        <h3 class="event__title">${name} ${prep} ${destinationCity}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="">
-              ${prettifyTime(startDate.getHours())}:${prettifyTime(startDate.getMinutes())}
+              ${prettifyTime(newStartDate.getHours())}:${prettifyTime(newStartDate.getMinutes())}
              </time>
             &mdash;
             <time class="event__end-time" datetime="">

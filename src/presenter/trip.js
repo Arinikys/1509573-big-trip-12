@@ -1,6 +1,7 @@
 import DayView from "../view/day.js";
 import SortView from "../view/sort.js";
 import StartView from "../view/start.js";
+import LoadingView from "../view/loading.js";
 import EventsListContainerView from "../view/events-list.js";
 import EventPresenter from "./event.js";
 import EventNewPresenter from "./event-new.js";
@@ -11,16 +12,18 @@ import {UpdateType, UserAction, FilterType} from "../const.js";
 
 
 export default class Trip {
-  constructor(tripContainer, eventsModel, filterModel) {
+  constructor(tripContainer, eventsModel, filterModel, api) {
     this._tripContainer = tripContainer;
     this._eventsModel = eventsModel;
     this._filterModel = filterModel;
     this._eventPresenter = {};
     this._dayList = [];
-
+    this._isLoading = true;
+    this._api = api;
 
     this._sortComponent = new SortView();
     this._startComponent = new StartView();
+    this._loadingComponent = new LoadingView();
     this._handleModeChange = this._handleModeChange.bind(this);
 
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -48,6 +51,14 @@ export default class Trip {
     return filtredEvents;
   }
 
+  _getDestination() {
+    return this._api.getDestinations();
+  }
+
+  _getOffers() {
+    return this._api.getOffers();
+  }
+
   _renderStart() {
     render(this._tripContainer, this._startComponent, RenderPosition.BEFOREEND);
   }
@@ -56,7 +67,15 @@ export default class Trip {
     render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
+  _renderLoading() {
+    render(this._tripContainer, this._loadingComponent, RenderPosition.BEFOREEND);
+  }
+
   _renderTripBoard() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
     if (this._getEvents().length === 0) {
       this._renderStart();
       return;
@@ -67,28 +86,30 @@ export default class Trip {
 
   _renderDayList() {
     let dateArr = createDateArr(this._getEvents());
-    dateArr.forEach((day, count) => {
-      const dayElem = new DayView(new Date(day), ++count);
-      this._dayList.push(dayElem);
-      render(this._tripContainer, dayElem, RenderPosition.BEFOREEND);
+    Promise.all([this._getDestination(), this._getOffers()]).then(([destination, offers]) => {
+      dateArr.forEach((day, count) => {
+        const dayElem = new DayView(new Date(day), ++count);
+        this._dayList.push(dayElem);
+        render(this._tripContainer, dayElem, RenderPosition.BEFOREEND);
 
-      const eventsListContainer = new EventsListContainerView();
-      render(dayElem, eventsListContainer, RenderPosition.BEFOREEND);
+        const eventsListContainer = new EventsListContainerView();
+        render(dayElem, eventsListContainer, RenderPosition.BEFOREEND);
 
-      const dateEvensList = crateDateEvensList(this._getEvents(), new Date(day));
-      this._renderEventsList(eventsListContainer, dateEvensList);
+        const dateEvensList = crateDateEvensList(this._getEvents(), new Date(day));
+        this._renderEventsList(eventsListContainer, dateEvensList, destination, offers);
+      });
     });
   }
 
-  _renderEventsList(eventsListContainer, dateEvensList) {
+  _renderEventsList(eventsListContainer, dateEvensList, destinationPoints, offers) {
     for (let event of dateEvensList) {
-      this._renderEvent(eventsListContainer, event);
+      this._renderEvent(eventsListContainer, event, destinationPoints, offers);
     }
   }
 
-  _renderEvent(eventListElement, event) {
+  _renderEvent(eventListElement, event, destinationPoints, offers) {
     const eventPresenter = new EventPresenter(eventListElement, this._handleViewAction, this._handleModeChange);
-    eventPresenter.init(event);
+    eventPresenter.init(event, destinationPoints, offers);
     this._eventPresenter[event.id] = eventPresenter;
   }
 
@@ -103,6 +124,9 @@ export default class Trip {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
         this._eventsModel.updateEvent(updateType, update);
+        this._api.updateEvents(update).then((response) => {
+          this._eventsModel.updateEvent(updateType, response);
+        });
         break;
       case UserAction.ADD_EVENT:
         this._eventsModel.addEvent(updateType, update);
@@ -126,6 +150,11 @@ export default class Trip {
         this._clearTrip({resetSortType: true});
         this._renderTripBoard();
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderTripBoard();
+        break;
     }
   }
 
@@ -141,6 +170,7 @@ export default class Trip {
     this._dayList = [];
     remove(this._sortComponent);
     remove(this._startComponent);
+    remove(this._loadingComponent);
     this._eventNewPresenter.destroy();
   }
 }
