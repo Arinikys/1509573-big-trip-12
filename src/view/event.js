@@ -1,5 +1,5 @@
 import AbstractView from './abstract.js';
-import {getEndTime, getPrep} from '../utils/event.js';
+import {decorateName, getEndTime, getPrep} from '../utils/event.js';
 import {prettifyTime} from '../utils/common.js';
 
 const MAX_VIS_OPTION_COUNT = 3;
@@ -8,6 +8,7 @@ const createEventTemplate = (curEvent) => {
   const {name, destinationCity, startDate, duration, price, options} = curEvent;
 
   const prep = getPrep(name);
+  const decoratedEventName = decorateName(name);
 
   const createOptionTemplate = () => {
     let optionList = ``;
@@ -31,9 +32,9 @@ const createEventTemplate = (curEvent) => {
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${name.toLowerCase()}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${name}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${name} ${prep} ${destinationCity}</h3>
+        <h3 class="event__title">${decoratedEventName} ${prep} ${destinationCity}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
