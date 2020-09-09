@@ -1,6 +1,6 @@
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract.js';
 import {getEndTime, getPrep} from '../utils/event.js';
-import {prettifyTime} from "../utils/common.js";
+import {prettifyTime} from '../utils/common.js';
 
 const MAX_VIS_OPTION_COUNT = 3;
 

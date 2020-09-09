@@ -1,7 +1,7 @@
 import {TRIP_EVENT} from '../const.js';
 import {getEndTime, generateDescription, generatePhotos, getPrep, decorateName} from '../utils/event.js';
-import {prettifyTime} from "../utils/common.js";
-import SmartView from "./smart.js";
+import {prettifyTime} from '../utils/common.js';
+import SmartView from './smart.js';
 
 const BLANK_EVENT = {
   startDate: new Date(),
@@ -16,8 +16,8 @@ const BLANK_EVENT = {
     descr: ``,
     photo: []
   },
-  dataEventName: `Flight`,
-  dataDestinationCity: `California`,
+  name: `flight`,
+  destinationCity: `California`,
 };
 
 const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
@@ -198,7 +198,7 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
 };
 
 export default class EditEvent extends SmartView {
-  constructor(event = BLANK_EVENT, destinationPoints, offers) {
+  constructor(destinationPoints, offers, event = BLANK_EVENT) {
     super();
     this._destinationPoints = destinationPoints;
     this._offers = offers;

@@ -1,4 +1,4 @@
-import {FilterType} from "../const";
+import {FilterType} from '../const';
 import {getEndTime} from '../utils/event.js';
 
 export const filter = {

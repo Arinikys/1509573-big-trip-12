@@ -1,4 +1,4 @@
-import {TRIP_EVENT} from "../const";
+import {TRIP_EVENT} from '../const';
 
 export const getEndTime = (startTime, duration)=> {
   const endTime = new Date(startTime);
