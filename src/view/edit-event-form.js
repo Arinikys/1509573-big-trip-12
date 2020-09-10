@@ -6,10 +6,10 @@ import SmartView from './smart.js';
 const BLANK_EVENT = {
   startDate: new Date(),
   duration: {
-    hour: 0,
-    minute: 0
+    hour: 10,
+    minute: 10
   },
-  price: 0,
+  price: 100,
   isFavorite: true,
   options: [],
   destination: {
@@ -17,11 +17,11 @@ const BLANK_EVENT = {
     photo: []
   },
   name: `flight`,
-  destinationCity: `California`,
+  destinationCity: ` `,
 };
 
 const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
-  const {startDate, duration, price, isFavorite, options, dataDestination, dataEventName, dataDestinationCity} = curEvent;
+  const {startDate, duration, price, isFavorite, options, dataDestination, dataEventName, dataDestinationCity, isDisabled, isSaving, isDeleting} = curEvent;
 
   const prep = getPrep(dataEventName);
   const decoratedDataEventName = decorateName(dataEventName);
@@ -118,7 +118,7 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
   };
 
 
-  return (`<form class="event  event--edit" action="#" method="post">
+  return (`<form class="event  event--edit" action="#" method="post" ${isDisabled ? `disabled` : ``}>
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -169,8 +169,8 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
           <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
         </div>
 
-        <button class="event__save-btn  btn  btn--blue">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
+        <button class="event__save-btn  btn  btn--blue" ${isDisabled ? `disabled` : ``}> ${isSaving ? `saving...` : `save`}</button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `deleting...` : `delete`}</button>
 
         <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
         <label class="event__favorite-btn" for="event-favorite-1">
@@ -216,10 +216,6 @@ export default class EditEvent extends SmartView {
     return createEditEventTemplate(this._data, this._destinationPoints, this._offers);
   }
 
-  _formSubmitHandler(evt) {
-    evt.preventDefault();
-    this._callback.formSubmit(EditEvent.parseDataToEvent(this._data));
-  }
 
   removeElement() {
     super.removeElement();
@@ -271,6 +267,11 @@ export default class EditEvent extends SmartView {
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
   }
 
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit(EditEvent.parseDataToEvent(this._data));
+  }
+
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().addEventListener(`submit`, this._formSubmitHandler);
@@ -297,7 +298,10 @@ export default class EditEvent extends SmartView {
       dataDestination: {
         descr: curEvent.destination.descr,
         photo: curEvent.destination.photo
-      }
+      },
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false
     });
   }
 
@@ -311,6 +315,10 @@ export default class EditEvent extends SmartView {
     delete data.dataEventName;
     delete data.dataDestinationCity;
     delete data.dataDestination;
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+
     return data;
   }
 }
