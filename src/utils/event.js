@@ -1,10 +1,19 @@
-import {getRandomInteger} from "./common";
+import {TRIP_EVENT} from '../const';
 
 export const getEndTime = (startTime, duration)=> {
   const endTime = new Date(startTime);
   endTime.setMinutes(endTime.getMinutes() + duration.minute);
   endTime.setHours(endTime.getHours() + duration.hour);
   return endTime;
+};
+
+export const getDuration = (startTime, endTime)=> {
+  startTime = Date.parse(startTime);
+  endTime = Date.parse(endTime);
+  const diff = endTime - startTime;
+  const hour = Math.round(diff / (1000 * 60 * 60));
+  const minute = Math.abs(Math.round((diff - hour * 1000 * 60 * 60) / (1000 * 60)));
+  return {hour, minute};
 };
 
 
@@ -20,36 +29,29 @@ export const createDateArr = (events) => {
   return dateArr;
 };
 
+
 export const crateDateEvensList = (events, date) => {
-  return events.filter((event) => event.startDate.getMonth() === date.getMonth() && event.startDate.getDate() === date.getDate());
+  return events.filter((event) => new Date(event.startDate).getMonth() === date.getMonth() && new Date(event.startDate).getDate() === date.getDate());
 };
 
-const DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Cras aliquet varius magna, non porta ligula feugiat eget.
-                      Fusce tristique felis at fermentum pharetra.
-                      Aliquam id orci ut lectus varius viverra.
-                      Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.
-                      Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.
-                      Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.
-                      Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat.
-                      Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
-const MAX_DESCR_SENTENCE_COUNT = 4;
-const MIN_PHOTO_COUNT = 1;
-const MAX_PHOTO_COUNT = 10;
-
-export const generateDescription = () => {
-  const sentences = DESCRIPTION.split(`.`);
-  let text = ``;
-  for (let i = 0; i < getRandomInteger(0, MAX_DESCR_SENTENCE_COUNT); i++) {
-    text += sentences[getRandomInteger(0, sentences.length - 1)] + `. `;
-  }
-  return text;
+export const generateDescription = (cityName, destinations) => {
+  const point = destinations.filter((destination) => destination.name === cityName);
+  return point[0].description;
 };
 
-export const generatePhotos = () => {
-  let photos = [];
-  for (let i = 0; i < getRandomInteger(MIN_PHOTO_COUNT, MAX_PHOTO_COUNT); i++) {
-    photos.push(`http://picsum.photos/248/152?r=${Math.random()}`);
-  }
-  return photos;
+export const generatePhotos = (cityName, destinations) => {
+  const point = destinations.filter((destination) => destination.name === cityName);
+  return point[0].pictures;
+};
+
+export const getPrep = (eventName) => {
+  const tripEvent = TRIP_EVENT.filter((item) => item.name.toLowerCase() === eventName.toLowerCase());
+  return tripEvent[0].type === `activity`
+    ? `in`
+    : `to`;
+};
+
+
+export const decorateName = (name) => {
+  return name.charAt(0).toUpperCase() + name.substr(1).toLowerCase();
 };

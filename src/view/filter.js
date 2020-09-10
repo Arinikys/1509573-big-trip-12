@@ -1,4 +1,4 @@
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract.js';
 
 const createFilterItemTemplate = (filter, currentFilterType) => {
   const {type, name} = filter;

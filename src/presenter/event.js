@@ -1,7 +1,7 @@
-import EditEventView from "../view/edit-event-form.js";
-import EventView from "../view/event.js";
-import {render, RenderPosition, replace, remove} from "../utils/render.js";
-import {UserAction, UpdateType} from "../const.js";
+import EditEventView from '../view/edit-event-form.js';
+import EventView from '../view/event.js';
+import {render, RenderPosition, replace, remove} from '../utils/render.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -25,14 +25,14 @@ export default class Event {
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
-  init(event) {
+  init(event, destinationPoints, offers) {
     this._event = event;
 
     const prevEventComponent = this._eventComponent;
     const prevEventEditComponent = this._eventEditComponent;
 
     this._eventComponent = new EventView(event);
-    this._eventEditComponent = new EditEventView(event);
+    this._eventEditComponent = new EditEventView(destinationPoints, offers, event);
 
     this._eventComponent.setEventClickHandler(this._handleEditClick);
     this._eventEditComponent.setFavoriteClickHandler(this._handleFavoriteClick);

@@ -1,26 +1,31 @@
-import DayView from "../view/day.js";
-import SortView from "../view/sort.js";
-import StartView from "../view/start.js";
-import EventsListContainerView from "../view/events-list.js";
-import EventPresenter from "./event.js";
-import EventNewPresenter from "./event-new.js";
-import {filter} from "../utils/filter.js";
+import DayView from '../view/day.js';
+import SortView from '../view/sort.js';
+import StartView from '../view/start.js';
+import LoadingView from '../view/loading.js';
+import EventsListContainerView from '../view/events-list.js';
+import EventPresenter from './event.js';
+import EventNewPresenter from './event-new.js';
+import {filter} from '../utils/filter.js';
 import {createDateArr, crateDateEvensList} from '../utils/event.js';
-import {render, RenderPosition, remove} from "../utils/render.js";
-import {UpdateType, UserAction, FilterType} from "../const.js";
+import {render, RenderPosition, remove} from '../utils/render.js';
+import {UpdateType, UserAction, FilterType} from '../const.js';
 
 
 export default class Trip {
-  constructor(tripContainer, eventsModel, filterModel) {
+  constructor(tripContainer, eventsModel, filterModel, api, destination, offers) {
     this._tripContainer = tripContainer;
     this._eventsModel = eventsModel;
     this._filterModel = filterModel;
     this._eventPresenter = {};
     this._dayList = [];
-
+    this._isLoading = true;
+    this._api = api;
+    this._destination = destination;
+    this._offers = offers;
 
     this._sortComponent = new SortView();
     this._startComponent = new StartView();
+    this._loadingComponent = new LoadingView();
     this._handleModeChange = this._handleModeChange.bind(this);
 
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -29,7 +34,7 @@ export default class Trip {
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
-    this._eventNewPresenter = new EventNewPresenter(this._tripContainer, this._handleViewAction);
+    this._eventNewPresenter = new EventNewPresenter(this._tripContainer, this._handleViewAction, this._destination, this._offers);
   }
 
   init() {
@@ -38,7 +43,7 @@ export default class Trip {
 
   createEvent() {
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._eventNewPresenter.init();
+    this._eventNewPresenter.init(this._destination, this._offers);
   }
 
   _getEvents() {
@@ -56,7 +61,15 @@ export default class Trip {
     render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
+  _renderLoading() {
+    render(this._tripContainer, this._loadingComponent, RenderPosition.BEFOREEND);
+  }
+
   _renderTripBoard() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
     if (this._getEvents().length === 0) {
       this._renderStart();
       return;
@@ -88,7 +101,7 @@ export default class Trip {
 
   _renderEvent(eventListElement, event) {
     const eventPresenter = new EventPresenter(eventListElement, this._handleViewAction, this._handleModeChange);
-    eventPresenter.init(event);
+    eventPresenter.init(event, this._destination, this._offers);
     this._eventPresenter[event.id] = eventPresenter;
   }
 
@@ -103,12 +116,19 @@ export default class Trip {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
         this._eventsModel.updateEvent(updateType, update);
+        this._api.updateEvents(update).then((response) => {
+          this._eventsModel.updateEvent(updateType, response);
+        });
         break;
       case UserAction.ADD_EVENT:
-        this._eventsModel.addEvent(updateType, update);
+        this._api.addEvent(update).then((response) => {
+          this._eventsModel.addEvent(updateType, response);
+        });
         break;
       case UserAction.DELETE_EVENT:
-        this._eventsModel.deleteEvent(updateType, update);
+        this._api.deleteEvent(update).then(() => {
+          this._eventsModel.deleteEvent(updateType, update);
+        });
         break;
     }
   }
@@ -116,7 +136,7 @@ export default class Trip {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._eventPresenter[data.id].init(data);
+        this._eventPresenter[data.id].init(data, this._destination, this._offers);
         break;
       case UpdateType.MINOR:
         this._clearTrip();
@@ -124,6 +144,11 @@ export default class Trip {
         break;
       case UpdateType.MAJOR:
         this._clearTrip({resetSortType: true});
+        this._renderTripBoard();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this._renderTripBoard();
         break;
     }
@@ -141,6 +166,7 @@ export default class Trip {
     this._dayList = [];
     remove(this._sortComponent);
     remove(this._startComponent);
+    remove(this._loadingComponent);
     this._eventNewPresenter.destroy();
   }
 }
