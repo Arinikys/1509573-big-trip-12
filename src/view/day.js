@@ -1,5 +1,5 @@
-import {prettifyTime} from "../utils/common.js";
-import AbstractView from "./abstract.js";
+import {prettifyTime} from '../utils/common.js';
+import AbstractView from './abstract.js';
 
 const MONTHS_NAMES = [`Jan`, `Feb`, `Mar`, `Apr`, `May`, `Jun`, `Jul`, `Aug`, `Sep`, `Oct`, `Nov`, `Dec`];
 

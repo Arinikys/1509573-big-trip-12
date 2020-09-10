@@ -1,10 +1,10 @@
-import Observer from "../utils/observer.js";
-import {getDuration, getEndTime} from "../utils/event";
+import Observer from '../utils/observer.js';
+import {getDuration, getEndTime} from '../utils/event';
 
 export default class Events extends Observer {
   constructor() {
     super();
-    this._event = [];
+    this._events = [];
   }
 
   setEvents(updateType, events) {
