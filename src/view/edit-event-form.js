@@ -13,8 +13,8 @@ const BLANK_EVENT = {
   isFavorite: true,
   options: [],
   destination: {
-    descr: ``,
-    photo: []
+    descr: null,
+    photo: null
   },
   name: `flight`,
   destinationCity: ``,
