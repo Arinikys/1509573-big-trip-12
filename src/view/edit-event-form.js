@@ -17,7 +17,7 @@ const BLANK_EVENT = {
     photo: []
   },
   name: `flight`,
-  destinationCity: ` `,
+  destinationCity: ``,
 };
 
 const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
