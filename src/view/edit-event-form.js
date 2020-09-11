@@ -2,6 +2,9 @@ import {TRIP_EVENT} from '../const.js';
 import {getEndTime, generateDescription, generatePhotos, getPrep, decorateName} from '../utils/event.js';
 import {prettifyTime} from '../utils/common.js';
 import SmartView from './smart.js';
+import flatpickr from "flatpickr";
+
+import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const BLANK_EVENT = {
   startDate: new Date(),
