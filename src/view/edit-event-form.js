@@ -1,5 +1,5 @@
 import {TRIP_EVENT} from '../const.js';
-import {getEndTime, generateDescription, generatePhotos, getPrep, decorateName} from '../utils/event.js';
+import {generateDescription, generatePhotos, getPrep, decorateName} from '../utils/event.js';
 import {prettifyTime} from '../utils/common.js';
 import SmartView from './smart.js';
 import flatpickr from "flatpickr";
@@ -9,10 +9,6 @@ import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 const BLANK_EVENT = {
   startDate: new Date(),
   endDate: new Date(),
-  duration: {
-    hour: 0,
-    minute: 0
-  },
   price: 100,
   isFavorite: true,
   options: [],
@@ -25,7 +21,7 @@ const BLANK_EVENT = {
 };
 
 const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
-  const {startDate, endDate, duration, price, isFavorite, options, dataDestination, dataEventName, dataDestinationCity, isDisabled, isSaving, isDeleting} = curEvent;
+  const {startDate, endDate, price, isFavorite, options, dataDestination, dataEventName, dataDestinationCity, isDisabled, isSaving, isDeleting} = curEvent;
 
   const prep = getPrep(dataEventName);
   const decoratedDataEventName = decorateName(dataEventName);
