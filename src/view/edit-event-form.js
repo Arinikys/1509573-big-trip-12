@@ -226,6 +226,10 @@ export default class EditEvent extends SmartView {
 
   removeElement() {
     super.removeElement();
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
   }
 
   restoreHandlers() {
@@ -267,7 +271,7 @@ export default class EditEvent extends SmartView {
         this.getElement().querySelector(`#event-end-time-1`),
         {
           enableTime: true,
-          dateFormat: `d/m/Y H:i`,
+          dateFormat: `d/m/y H:i`,
           defaultDate: this._data.endDate,
           onChange: this._endDateChangeHandler
         }
