@@ -8,9 +8,10 @@ import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const BLANK_EVENT = {
   startDate: new Date(),
+  endDate: new Date(),
   duration: {
-    hour: 10,
-    minute: 10
+    hour: 0,
+    minute: 0
   },
   price: 100,
   isFavorite: true,
@@ -24,7 +25,7 @@ const BLANK_EVENT = {
 };
 
 const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
-  const {startDate, duration, price, isFavorite, options, dataDestination, dataEventName, dataDestinationCity, isDisabled, isSaving, isDeleting} = curEvent;
+  const {startDate, endDate, duration, price, isFavorite, options, dataDestination, dataEventName, dataDestinationCity, isDisabled, isSaving, isDeleting} = curEvent;
 
   const prep = getPrep(dataEventName);
   const decoratedDataEventName = decorateName(dataEventName);
@@ -112,8 +113,6 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
   };
 
   const destinationCityTemplate = createDestinationCityTemplate();
-
-  const endDate = getEndTime(startDate, duration);
 
   const prettifyDate = (date) => {
     const newDate = new Date(date);
@@ -206,13 +205,18 @@ export default class EditEvent extends SmartView {
     this._destinationPoints = destinationPoints;
     this._offers = offers;
     this._data = EditEvent.parseEventToData(event);
+    this._datepicker = null;
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
+    this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
 
     this._eventNameHandler = this._eventNameHandler.bind(this);
     this._eventCityHandler = this._eventCityHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._setInnerHandlers();
+    this._setDatepicker();
   }
 
   getTemplate() {
@@ -228,6 +232,46 @@ export default class EditEvent extends SmartView {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setDeleteClickHandler(this._callback.deleteClick);
+    this._setDatepicker();
+  }
+
+  _startDateChangeHandler([userDate]) {
+    this.updateData({
+      startDate: userDate
+    });
+  }
+
+  _endDateChangeHandler([userDate]) {
+    this.updateData({
+      endDate: userDate
+    });
+  }
+
+  _setDatepicker() {
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    this._datepicker = flatpickr(
+        this.getElement().querySelector(`#event-start-time-1`),
+        {
+          enableTime: true,
+          dateFormat: `d/m/y H:i`,
+          defaultDate: this._data.startDate,
+          onChange: this._startDateChangeHandler
+        }
+    );
+
+    this._datepicker = flatpickr(
+        this.getElement().querySelector(`#event-end-time-1`),
+        {
+          enableTime: true,
+          dateFormat: `d/m/Y H:i`,
+          defaultDate: this._data.endDate,
+          onChange: this._endDateChangeHandler
+        }
+    );
   }
 
   _setInnerHandlers() {
