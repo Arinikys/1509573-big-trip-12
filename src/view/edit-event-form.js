@@ -21,14 +21,14 @@ const BLANK_EVENT = {
 };
 
 const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
-  const {startDate, endDate, price, isFavorite, options, dataDestination, dataEventName, dataDestinationCity, isDisabled, isSaving, isDeleting} = curEvent;
+  const {dataStartDate, dataEndDate, dataPrice, isFavorite, dataOptions, dataDestination, dataEventName, dataDestinationCity, isDisabled, isSaving, isDeleting} = curEvent;
 
   const prep = getPrep(dataEventName);
   const decoratedDataEventName = decorateName(dataEventName);
 
   const getAvailableOption = ()=> {
     const availableOptionName = new Set();
-    for (let option of options) {
+    for (let option of dataOptions) {
       availableOptionName.add(option.title);
     }
     return availableOptionName;
@@ -67,13 +67,15 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
       optionList += `<div class="event__offer-selector">
         <input
           class="event__offer-checkbox  visually-hidden"
-          id="event-offer-${optionAttr}-1"
+          id="${optionAttr}"
           type="checkbox"
-          name="event-offer-${optionAttr}"
+          name="${optionAttr}"
+          data-title="${option.title}"
+          data-price="${option.price}"
           ${availableOptionList.has(option.title) ? `checked` : ``}
           ${isDisabled ? `disabled` : ``}
         >
-        <label class="event__offer-label" for="event-offer-${optionAttr}-1">
+        <label class="event__offer-label" for="${optionAttr}">
           <span class="event__offer-title">${option.title}</span>
           &plus; &euro;&nbsp;<span class="event__offer-price">${option.price}</span>
         </label>
@@ -152,12 +154,12 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
           <label class="visually-hidden" for="event-start-time-1">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${prettifyDate(startDate)}" ${isDisabled ? `disabled` : ``}>
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${prettifyDate(dataStartDate)}" ${isDisabled ? `disabled` : ``}>
           —
           <label class="visually-hidden" for="event-end-time-1">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${prettifyDate(endDate)}" ${isDisabled ? `disabled` : ``}>
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${prettifyDate(dataEndDate)}" ${isDisabled ? `disabled` : ``}>
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -165,7 +167,7 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
             <span class="visually-hidden">Price</span>
             €
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" ${isDisabled ? `disabled` : ``}>
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${dataPrice}" ${isDisabled ? `disabled` : ``}>
         </div>
 
         <button class="event__save-btn  btn  btn--blue" ${isDisabled ? `disabled` : ``}> ${isSaving ? `saving...` : `save`}</button>
@@ -211,6 +213,10 @@ export default class EditEvent extends SmartView {
 
     this._eventNameHandler = this._eventNameHandler.bind(this);
     this._eventCityHandler = this._eventCityHandler.bind(this);
+    this._eventPriceHandler = this._eventPriceHandler.bind(this);
+    this._eventOffersHandler = this._eventOffersHandler.bind(this);
+    this._eventStartDateHandler = this._eventStartDateHandler.bind(this);
+    this._eventEndDateHandler = this._eventEndDateHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._setInnerHandlers();
     this._setDatepicker();
@@ -248,6 +254,7 @@ export default class EditEvent extends SmartView {
     });
   }
 
+
   _setDatepicker() {
     if (this._datepicker) {
       this._datepicker.destroy();
@@ -259,7 +266,7 @@ export default class EditEvent extends SmartView {
         {
           enableTime: true,
           dateFormat: `d/m/y H:i`,
-          defaultDate: this._data.startDate,
+          defaultDate: this._data.dataStartDate,
           onChange: this._startDateChangeHandler
         }
     );
@@ -269,7 +276,7 @@ export default class EditEvent extends SmartView {
         {
           enableTime: true,
           dateFormat: `d/m/y H:i`,
-          defaultDate: this._data.endDate,
+          defaultDate: this._data.dataEndDate,
           onChange: this._endDateChangeHandler
         }
     );
@@ -283,6 +290,20 @@ export default class EditEvent extends SmartView {
     this.getElement()
       .querySelector(`#event-destination-1`)
       .addEventListener(`change`, this._eventCityHandler);
+    this.getElement()
+      .querySelector(`.event__input--price`)
+      .addEventListener(`change`, this._eventPriceHandler);
+    this.getElement()
+      .querySelector(`#event-start-time-1`)
+      .addEventListener(`change`, this._eventStartDateHandler);
+    this.getElement()
+      .querySelector(`#event-end-time-1`)
+      .addEventListener(`change`, this._eventEndDateHandler);
+
+    const offersInputs = this.getElement().querySelectorAll(`.event__available-offers input`);
+    for (let input of offersInputs) {
+      input.addEventListener(`change`, this._eventOffersHandler);
+    }
   }
 
   _favoriteClickHandler(evt) {
@@ -298,6 +319,39 @@ export default class EditEvent extends SmartView {
         descr: generateDescription(evt.target.value, this._destinationPoints),
         photo: generatePhotos(evt.target.value, this._destinationPoints)
       }
+    });
+  }
+
+  _eventPriceHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      dataPrice: parseInt(evt.target.value, 10)
+    });
+  }
+
+  _eventOffersHandler() {
+    const offersInputs = this.getElement().querySelectorAll(`.event__available-offers input`);
+    const checkedOffers = Array.from(offersInputs).filter((input) => input.checked);
+    let offersList = [];
+    for (let offer of checkedOffers) {
+      offersList.push({title: offer.dataset.title, price: parseInt(offer.dataset.price, 10)});
+    }
+    this.updateData({
+      dataOptions: offersList
+    });
+  }
+
+  _eventStartDateHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      dataStartDate: new Date(evt.target.value)
+    });
+  }
+
+  _eventEndDateHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      dataEndDate: new Date(evt.target.value)
     });
   }
 
@@ -342,6 +396,10 @@ export default class EditEvent extends SmartView {
   static parseEventToData(curEvent) {
     return Object.assign({}, curEvent, {
       dataEventName: curEvent.name,
+      dataPrice: curEvent.price,
+      dataStartDate: curEvent.startDate,
+      dataOptions: curEvent.options,
+      dataEndDate: curEvent.endDate,
       dataDestinationCity: curEvent.destinationCity,
       dataDestination: {
         descr: curEvent.destination.descr,
@@ -357,12 +415,20 @@ export default class EditEvent extends SmartView {
     data = Object.assign({}, data);
     data.name = data.dataEventName;
     data.destinationCity = data.dataDestinationCity;
+    data.startDate = data.dataStartDate;
+    data.endDate = data.dataEndDate;
+    data.price = data.dataPrice;
+    data.options = data.dataOptions;
     data.destination.descr = data.dataDestination.descr;
     data.destination.photo = data.dataDestination.photo;
 
     delete data.dataEventName;
     delete data.dataDestinationCity;
+    delete data.dataStartDate;
+    delete data.dataEndDate;
+    delete data.dataPrice;
     delete data.dataDestination;
+    delete data.dataOptions;
     delete data.isDisabled;
     delete data.isSaving;
     delete data.isDeleting;
