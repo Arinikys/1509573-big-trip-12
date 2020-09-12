@@ -64,6 +64,7 @@ export default class Events extends Observer {
           name: event.type,
           price: event.base_price,
           startDate: event.date_from,
+          endDate: event.date_to,
           duration: getDuration(event.date_from, event.date_to),
           destinationCity: event.destination.name,
           destination: {

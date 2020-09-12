@@ -1,4 +1,5 @@
 import {TRIP_EVENT} from '../const';
+import moment from "moment";
 
 export const getEndTime = (startTime, duration)=> {
   const endTime = new Date(startTime);
@@ -8,11 +9,9 @@ export const getEndTime = (startTime, duration)=> {
 };
 
 export const getDuration = (startTime, endTime)=> {
-  startTime = Date.parse(startTime);
-  endTime = Date.parse(endTime);
-  const diff = endTime - startTime;
-  const hour = Math.round(diff / (1000 * 60 * 60));
-  const minute = Math.abs(Math.round((diff - hour * 1000 * 60 * 60) / (1000 * 60)));
+  const test = moment.duration(moment(endTime).diff(moment(startTime)));
+  const hour = test._data.hours;
+  const minute = test._data.minutes;
   return {hour, minute};
 };
 
