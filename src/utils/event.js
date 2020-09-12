@@ -35,12 +35,12 @@ export const crateDateEvensList = (events, date) => {
 
 export const generateDescription = (cityName, destinations) => {
   const point = destinations.filter((destination) => destination.name === cityName);
-  return point[0].description;
+  return point[0] ? point[0].description : null;
 };
 
 export const generatePhotos = (cityName, destinations) => {
   const point = destinations.filter((destination) => destination.name === cityName);
-  return point[0].pictures;
+  return point[0] ? point[0].pictures : null;
 };
 
 export const getPrep = (eventName) => {
