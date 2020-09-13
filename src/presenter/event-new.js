@@ -10,22 +10,31 @@ export default class EventNew {
     this._offers = offers;
 
     this._eventEditComponent = null;
+    this._destroyCallback = null;
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._handleCloseClick = this._handleCloseClick.bind(this);
   }
 
-  init() {
+  init(callback) {
+    this._destroyCallback = callback;
+
     if (this._eventEditComponent !== null) {
       return;
+    }
+
+    if (this._destroyCallback !== null) {
+      this._destroyCallback();
     }
 
     this._eventEditComponent = new EventEditView(this._destination, this._offers);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
+    this._eventEditComponent.setCloseClickHandler(this._handleCloseClick);
 
-    render(this._eventListContainer, this._eventEditComponent, RenderPosition.AFTERBEGIN);
+    render(this._eventListContainer, this._eventEditComponent, RenderPosition.AFTERCONTAINER);
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
@@ -78,5 +87,9 @@ export default class EventNew {
       evt.preventDefault();
       this.destroy();
     }
+  }
+
+  _handleCloseClick() {
+    this.destroy();
   }
 }

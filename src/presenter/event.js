@@ -25,6 +25,7 @@ export default class Event {
     this._mode = Mode.DEFAULT;
 
     this._handleEditClick = this._handleEditClick.bind(this);
+    this._handleCloseClick = this._handleCloseClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
@@ -41,6 +42,7 @@ export default class Event {
     this._eventEditComponent = new EditEventView(destinationPoints, offers, event);
 
     this._eventComponent.setEventClickHandler(this._handleEditClick);
+    this._eventEditComponent.setCloseClickHandler(this._handleCloseClick);
     this._eventEditComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
@@ -120,6 +122,10 @@ export default class Event {
     replace(this._eventComponent, this._eventEditComponent);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
     this._mode = Mode.DEFAULT;
+  }
+
+  _handleCloseClick() {
+    this._replaceFormToEvent();
   }
 
   _handleEditClick() {
