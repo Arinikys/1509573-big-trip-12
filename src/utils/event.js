@@ -9,9 +9,9 @@ export const getEndTime = (startTime, duration)=> {
 };
 
 export const getDuration = (startTime, endTime)=> {
-  const test = moment.duration(moment(endTime).diff(moment(startTime)));
-  const hour = test._data.hours;
-  const minute = test._data.minutes;
+  const eventDuration = moment.duration(moment(endTime).diff(moment(startTime)));
+  const hour = eventDuration._data.hours;
+  const minute = eventDuration._data.minutes;
   return {hour, minute};
 };
 
