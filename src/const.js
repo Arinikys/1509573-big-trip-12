@@ -40,19 +40,28 @@ export const TRIP_EVENT = [
     type: `activity`
   }
 ];
+
 export const UserAction = {
   UPDATE_EVENT: `UPDATE_EVENT`,
   ADD_EVENT: `ADD_EVENT`,
   DELETE_EVENT: `DELETE_EVENT`
 };
+
 export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
   MAJOR: `MAJOR`,
   INIT: `INIT`
 };
+
 export const FilterType = {
   EVERYTHING: `Everything`,
   FUTURE: `Future`,
   PAST: `Past`,
+};
+
+export const MenuItem = {
+  ADD_NEW_TASK: `ADD_NEW_TASK`,
+  EVENTS: `EVENTS`,
+  STATISTICS: `STATISTICS`
 };

@@ -34,16 +34,16 @@ export default class Trip {
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
-    this._eventNewPresenter = new EventNewPresenter(this._tripContainer, this._handleViewAction, this._destination, this._offers);
+    this._eventNewPresenter = new EventNewPresenter(this._sortComponent, this._handleViewAction, this._destination, this._offers);
   }
 
   init() {
     this._renderTripBoard(this._getEvents());
   }
 
-  createEvent() {
+  createEvent(callback) {
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._eventNewPresenter.init(this._destination, this._offers);
+    this._eventNewPresenter.init(callback);
   }
 
   _getEvents() {
@@ -163,9 +163,15 @@ export default class Trip {
       case UpdateType.INIT:
         this._isLoading = false;
         remove(this._loadingComponent);
-        this._renderTripBoard();
         break;
     }
+  }
+
+  destroy() {
+    this._clearTrip();
+
+    this._eventsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _clearTrip() {

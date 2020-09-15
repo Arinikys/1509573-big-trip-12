@@ -9,9 +9,9 @@ export const getEndTime = (startTime, duration)=> {
 };
 
 export const getDuration = (startTime, endTime)=> {
-  const test = moment.duration(moment(endTime).diff(moment(startTime)));
-  const hour = test._data.hours;
-  const minute = test._data.minutes;
+  const eventDuration = moment.duration(moment(endTime).diff(moment(startTime)));
+  const hour = eventDuration._data.hours;
+  const minute = eventDuration._data.minutes;
   return {hour, minute};
 };
 
@@ -35,12 +35,12 @@ export const crateDateEvensList = (events, date) => {
 
 export const generateDescription = (cityName, destinations) => {
   const point = destinations.filter((destination) => destination.name === cityName);
-  return point[0].description;
+  return point[0] ? point[0].description : null;
 };
 
 export const generatePhotos = (cityName, destinations) => {
   const point = destinations.filter((destination) => destination.name === cityName);
-  return point[0].pictures;
+  return point[0] ? point[0].pictures : null;
 };
 
 export const getPrep = (eventName) => {

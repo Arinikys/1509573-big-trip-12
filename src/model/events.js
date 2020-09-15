@@ -1,5 +1,5 @@
 import Observer from '../utils/observer.js';
-import {getDuration, getEndTime} from '../utils/event';
+import {getDuration} from '../utils/event';
 
 export default class Events extends Observer {
   constructor() {
@@ -93,7 +93,7 @@ export default class Events extends Observer {
         event,
         {
           // eslint-disable-next-line camelcase
-          date_to: getEndTime(event.startDate, event.duration),
+          date_to: event.endDate,
           // eslint-disable-next-line camelcase
           date_from: event.startDate,
           // eslint-disable-next-line camelcase
@@ -113,6 +113,7 @@ export default class Events extends Observer {
     delete adaptedEvent.isFavorite;
     delete adaptedEvent.duration;
     delete adaptedEvent.startDate;
+    delete adaptedEvent.endDate;
     delete adaptedEvent.isFavorite;
     delete adaptedEvent.price;
     delete adaptedEvent.destinationCity;

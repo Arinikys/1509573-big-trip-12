@@ -1,24 +1,31 @@
 import MenuControlsView from './view/site-menu.js';
+import StatisticsView from "./view/stat.js";
+import AddBtnView from './view/add-btn.js';
 import TripInfoView from './view/trip-info.js';
 import EventsModel from './model/events.js';
 import FilterModel from './model/filter.js';
 import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
-import {render, RenderPosition} from './utils/render.js';
-import {UpdateType} from './const.js';
+import {render, RenderPosition, remove} from './utils/render.js';
+import {UpdateType, MenuItem} from './const.js';
 import Api from './api.js';
 
-const AUTHORIZATION = `Basic fghjdfghdfgh`;
+const AUTHORIZATION = `Basic fghjdfzdfgzdfgghdfgh`;
 const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
 
 const tripMainElement = document.querySelector(`.trip-main`);
+const bodyContainerElement = document.querySelector(`.page-main__container`);
 const tripControlElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
 const tripEventsElement = document.querySelector(`.trip-events`);
+const siteMenuComponent = new MenuControlsView();
+const addBtnComponent = new AddBtnView();
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
 const eventsModel = new EventsModel();
 const filterModel = new FilterModel();
+
+let statisticsComponent = null;
 
 Promise.all([api.getDestinations(), api.getOffers(), api.getEvents()])
   .then(([destination, offers, events]) => {
@@ -31,16 +38,44 @@ Promise.all([api.getDestinations(), api.getOffers(), api.getEvents()])
     tripPresenter.init();
     filterPresenter.init();
 
-    render(tripMainElement, new TripInfoView(), RenderPosition.AFTERBEGIN);
-    render(tripControlElement, new MenuControlsView(), RenderPosition.BEFOREEND);
+    const handleEventNewFormClose = () => {
+      siteMenuComponent.setMenuItem(MenuItem.EVENTS);
+      addBtnComponent.getElement().disabled = false;
+    };
 
-    document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
-      evt.preventDefault();
-      tripPresenter.createEvent();
-    });
+    const handleSiteMenuClick = (menuItem) => {
+      switch (menuItem) {
+        case MenuItem.ADD_NEW_TASK:
+          remove(statisticsComponent);
+          tripPresenter.destroy();
+          tripPresenter.init();
+          tripPresenter.createEvent(handleEventNewFormClose);
+          addBtnComponent.getElement().disabled = true;
+          break;
+        case MenuItem.EVENTS:
+          remove(statisticsComponent);
+          tripPresenter.destroy();
+          tripPresenter.init();
+          addBtnComponent.getElement().disabled = false;
+          break;
+        case MenuItem.STATISTICS:
+          tripPresenter.destroy();
+          addBtnComponent.getElement().disabled = false;
+          statisticsComponent = new StatisticsView(eventsModel.getEvents());
+          render(bodyContainerElement, statisticsComponent, RenderPosition.BEFOREEND);
+          statisticsComponent.restoreHandlers();
+          break;
+      }
+    };
+
+    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+    addBtnComponent.setAddBtnClickHandler(handleSiteMenuClick);
+
+    render(tripMainElement, new TripInfoView(), RenderPosition.AFTERBEGIN);
+    render(tripControlElement, siteMenuComponent, RenderPosition.BEFOREEND);
+    render(tripMainElement, addBtnComponent, RenderPosition.BEFOREEND);
   })
   .catch(() => {
     eventsModel.setEvents(UpdateType.INIT, []);
     render(tripMainElement, new TripInfoView(), RenderPosition.AFTERBEGIN);
-    render(tripControlElement, new MenuControlsView(), RenderPosition.BEFOREEND);
   });
