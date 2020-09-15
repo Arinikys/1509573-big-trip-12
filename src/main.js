@@ -40,7 +40,6 @@ Promise.all([api.getDestinations(), api.getOffers(), api.getEvents()])
 
     const handleEventNewFormClose = () => {
       siteMenuComponent.setMenuItem(MenuItem.EVENTS);
-      addBtnComponent.getElement().disabled = false;
     };
 
     const handleSiteMenuClick = (menuItem) => {
@@ -50,17 +49,14 @@ Promise.all([api.getDestinations(), api.getOffers(), api.getEvents()])
           tripPresenter.destroy();
           tripPresenter.init();
           tripPresenter.createEvent(handleEventNewFormClose);
-          addBtnComponent.getElement().disabled = true;
           break;
         case MenuItem.EVENTS:
           remove(statisticsComponent);
           tripPresenter.destroy();
           tripPresenter.init();
-          addBtnComponent.getElement().disabled = false;
           break;
         case MenuItem.STATISTICS:
           tripPresenter.destroy();
-          addBtnComponent.getElement().disabled = false;
           statisticsComponent = new StatisticsView(eventsModel.getEvents());
           render(bodyContainerElement, statisticsComponent, RenderPosition.BEFOREEND);
           statisticsComponent.restoreHandlers();

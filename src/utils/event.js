@@ -54,3 +54,11 @@ export const getPrep = (eventName) => {
 export const decorateName = (name) => {
   return name.charAt(0).toUpperCase() + name.substr(1).toLowerCase();
 };
+
+export const sortByPrice = (eventA, eventB) => {
+  //console.log(`sortByPrice`);
+};
+
+export const sortByTime = (eventA, eventB) => {
+  //console.log(`sortByTime`);
+};

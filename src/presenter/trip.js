@@ -6,9 +6,9 @@ import EventsListContainerView from '../view/events-list.js';
 import EventPresenter, {State as EventPresenterViewState} from './event.js';
 import EventNewPresenter from './event-new.js';
 import {filter} from '../utils/filter.js';
-import {createDateArr, crateDateEvensList} from '../utils/event.js';
+import {createDateArr, crateDateEvensList, sortByTime, sortByPrice} from '../utils/event.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
-import {UpdateType, UserAction, FilterType} from '../const.js';
+import {UpdateType, UserAction, FilterType, SortType} from '../const.js';
 
 
 export default class Trip {
@@ -18,38 +18,54 @@ export default class Trip {
     this._filterModel = filterModel;
     this._eventPresenter = {};
     this._dayList = [];
+    this._dayItem = null;
     this._isLoading = true;
     this._api = api;
     this._destination = destination;
     this._offers = offers;
+    this._currentSortType = SortType.EVENT;
 
-    this._sortComponent = new SortView();
+    this._sortComponent = null;
+
     this._startComponent = new StartView();
     this._loadingComponent = new LoadingView();
     this._handleModeChange = this._handleModeChange.bind(this);
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
-    this._eventNewPresenter = new EventNewPresenter(this._sortComponent, this._handleViewAction, this._destination, this._offers);
+    this._eventNewPresenter = new EventNewPresenter(this._handleViewAction, this._destination, this._offers);
   }
 
   init() {
+    this._eventsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
     this._renderTripBoard(this._getEvents());
   }
 
   createEvent(callback) {
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._eventNewPresenter.init(callback);
+    this._eventNewPresenter.init(callback, this._sortComponent);
   }
 
   _getEvents() {
     const filterType = this._filterModel.getFilter();
     const events = this._eventsModel.getEvents();
     const filtredEvents = filter[filterType](events);
+    switch (this._currentSortType) {
+      case SortType.PRICE:
+        // return filtredEvents.sort(sortByPrice);
+        break;
+      case SortType.TIME:
+        // return filtredEvents.sort(sortByTime);
+        break;
+    }
+
     return filtredEvents;
   }
 
@@ -58,6 +74,13 @@ export default class Trip {
   }
 
   _renderSort() {
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
+    }
+
+    this._sortComponent = new SortView(this._currentSortType);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+
     render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
@@ -80,17 +103,23 @@ export default class Trip {
 
   _renderDayList() {
     let dateArr = createDateArr(this._getEvents());
-    dateArr.forEach((day, count) => {
-      const dayElem = new DayView(new Date(day), ++count);
-      this._dayList.push(dayElem);
-      render(this._tripContainer, dayElem, RenderPosition.BEFOREEND);
-
+    if (this._currentSortType === SortType.EVENT) {
+      dateArr.forEach((day, count) => {
+        const dayElem = new DayView(new Date(day), ++count);
+        this._dayList.push(dayElem);
+        render(this._tripContainer, dayElem, RenderPosition.BEFOREEND);
+        const eventsListContainer = new EventsListContainerView();
+        render(dayElem, eventsListContainer, RenderPosition.BEFOREEND);
+        const dateEvensList = crateDateEvensList(this._getEvents(), new Date(day));
+        this._renderEventsList(eventsListContainer, dateEvensList);
+      });
+    } else {
+      this._dayItem = new DayView();
+      render(this._tripContainer, this._dayItem, RenderPosition.BEFOREEND);
       const eventsListContainer = new EventsListContainerView();
-      render(dayElem, eventsListContainer, RenderPosition.BEFOREEND);
-
-      const dateEvensList = crateDateEvensList(this._getEvents(), new Date(day));
-      this._renderEventsList(eventsListContainer, dateEvensList);
-    });
+      render(this._dayItem, eventsListContainer, RenderPosition.BEFOREEND);
+      this._renderEventsList(eventsListContainer, this._getEvents());
+    }
   }
 
   _renderEventsList(eventsListContainer, dateEvensList) {
@@ -103,6 +132,15 @@ export default class Trip {
     const eventPresenter = new EventPresenter(eventListElement, this._handleViewAction, this._handleModeChange);
     eventPresenter.init(event, this._destination, this._offers);
     this._eventPresenter[event.id] = eventPresenter;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+    this._currentSortType = sortType;
+    this._clearTrip();
+    this._renderTripBoard();
   }
 
   _handleModeChange() {
@@ -174,7 +212,7 @@ export default class Trip {
     this._filterModel.removeObserver(this._handleModelEvent);
   }
 
-  _clearTrip() {
+  _clearTrip({resetSortType = false} = {}) {
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.destroy());
@@ -184,9 +222,15 @@ export default class Trip {
       day.removeElement();
     }
     this._dayList = [];
+    if (this._dayItem) {
+      remove(this._dayItem);
+    }
     remove(this._sortComponent);
     remove(this._startComponent);
     remove(this._loadingComponent);
     this._eventNewPresenter.destroy();
+    if (resetSortType) {
+      this._currentSortType = SortType.EVENT;
+    }
   }
 }
