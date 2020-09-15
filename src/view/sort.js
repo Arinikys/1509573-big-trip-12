@@ -1,4 +1,6 @@
 import AbstractView from './abstract.js';
+import {SortType} from "../const.js";
+
 const sort = [
   {
     label: `day`,
@@ -8,21 +10,21 @@ const sort = [
     isInput: false,
   },
   {
-    label: `event`,
+    label: SortType.EVENT,
     name: `Event`,
     hasIcon: false,
     isChecked: true,
     isInput: true,
   },
   {
-    label: `time`,
+    label: SortType.TIME,
     name: `Time`,
     hasIcon: true,
     isChecked: false,
     isInput: true,
   },
   {
-    label: `price`,
+    label: SortType.PRICE,
     name: `Price`,
     hasIcon: true,
     isChecked: false,
@@ -51,8 +53,8 @@ const createSortTemplate = () => {
         sortItems += `<span class="trip-sort__item  trip-sort__item--${item.label}">${item.name}</span>`;
       } else {
         sortItems += `<div class="trip-sort__item  trip-sort__item--time">
-          <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${item.label}" ${item.isChecked ? `checked` : ``}>
-          <label class="trip-sort__btn" for="sort-${item.label}">
+          <input id="sort-${item.label}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="${item.label}" ${item.isChecked ? `checked` : ``}>
+          <label class="trip-sort__btn" data-sort-type="${item.label}" for="sort-${item.label}">
             ${item.name}
             ${icon(item.hasIcon)}
           </label>
@@ -71,7 +73,25 @@ const createSortTemplate = () => {
 };
 
 export default class Sort extends AbstractView {
+  constructor() {
+    super();
+
+    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+  }
+
   getTemplate() {
     return createSortTemplate();
+  }
+
+  _sortTypeChangeHandler(evt) {
+    if (evt.target.tagName !== `LABEL`) {
+      return;
+    }
+    this._callback.sortTypeChange(evt.target.dataset.sortType);
+  }
+
+  setSortTypeChangeHandler(callback) {
+    this._callback.sortTypeChange = callback;
+    this.getElement().addEventListener(`click`, this._sortTypeChangeHandler);
   }
 }
