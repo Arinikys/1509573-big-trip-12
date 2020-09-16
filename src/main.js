@@ -1,7 +1,6 @@
 import MenuControlsView from './view/site-menu.js';
 import StatisticsView from "./view/stat.js";
 import AddBtnView from './view/add-btn.js';
-import TripInfoView from './view/trip-info.js';
 import EventsModel from './model/events.js';
 import FilterModel from './model/filter.js';
 import TripPresenter from './presenter/trip.js';
@@ -67,7 +66,6 @@ Promise.all([api.getDestinations(), api.getOffers(), api.getEvents()])
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
     addBtnComponent.setAddBtnClickHandler(handleSiteMenuClick);
 
-    render(tripMainElement, new TripInfoView(), RenderPosition.AFTERBEGIN);
     render(tripControlElement, siteMenuComponent, RenderPosition.BEFOREEND);
     render(tripMainElement, addBtnComponent, RenderPosition.BEFOREEND);
   })

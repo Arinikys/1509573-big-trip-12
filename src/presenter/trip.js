@@ -59,10 +59,12 @@ export default class Trip {
     const filtredEvents = filter[filterType](events);
     switch (this._currentSortType) {
       case SortType.PRICE:
-        // return filtredEvents.sort(sortByPrice);
+        return filtredEvents.sort(sortByPrice);
+        // eslint-disable-next-line no-unreachable
         break;
       case SortType.TIME:
-        // return filtredEvents.sort(sortByTime);
+        return filtredEvents.sort(sortByTime);
+        // eslint-disable-next-line no-unreachable
         break;
     }
 
