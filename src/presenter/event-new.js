@@ -3,8 +3,8 @@ import {remove, render, RenderPosition} from '../utils/render.js';
 import {UserAction, UpdateType} from '../const.js';
 
 export default class EventNew {
-  constructor(eventListContainer, changeData, destination, offers) {
-    this._eventListContainer = eventListContainer;
+  constructor(changeData, destination, offers) {
+    this._sortContainer = null;
     this._changeData = changeData;
     this._destination = destination;
     this._offers = offers;
@@ -18,8 +18,9 @@ export default class EventNew {
     this._handleCloseClick = this._handleCloseClick.bind(this);
   }
 
-  init(callback) {
+  init(callback, sortContainer) {
     this._destroyCallback = callback;
+    this._sortContainer = sortContainer;
 
     if (this._eventEditComponent !== null) {
       return;
@@ -34,7 +35,7 @@ export default class EventNew {
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._eventEditComponent.setCloseClickHandler(this._handleCloseClick);
 
-    render(this._eventListContainer, this._eventEditComponent, RenderPosition.AFTERCONTAINER);
+    render(this._sortContainer, this._eventEditComponent, RenderPosition.AFTERCONTAINER);
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
   }

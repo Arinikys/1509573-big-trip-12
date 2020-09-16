@@ -65,3 +65,9 @@ export const MenuItem = {
   EVENTS: `EVENTS`,
   STATISTICS: `STATISTICS`
 };
+
+export const SortType = {
+  EVENT: `event`,
+  TIME: `time`,
+  PRICE: `price`
+};
