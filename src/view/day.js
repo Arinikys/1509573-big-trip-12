@@ -4,13 +4,17 @@ import AbstractView from './abstract.js';
 const MONTHS_NAMES = [`Jan`, `Feb`, `Mar`, `Apr`, `May`, `Jun`, `Jul`, `Aug`, `Sep`, `Oct`, `Nov`, `Dec`];
 
 const createDayTemplate = (date, count) => {
-  let month = MONTHS_NAMES[date.getMonth()];
-  let day = prettifyTime(date.getDate());
+  let month = ``;
+  let day = ``;
+  if (date !== undefined) {
+    month = MONTHS_NAMES[date.getMonth()];
+    day = prettifyTime(date.getDate());
+  }
 
   return (
     `<li class="trip-days__item  day">
       <div class="day__info">
-      <span class="day__counter">${count}</span>
+      <span class="day__counter">${count ? count : ``}</span>
         <time class="day__date" datetime="2019-${month}-${day}">${month + ` ` + day}</time>
       </div>
     </li>`

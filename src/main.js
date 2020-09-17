@@ -1,7 +1,6 @@
 import MenuControlsView from './view/site-menu.js';
 import StatisticsView from "./view/stat.js";
 import AddBtnView from './view/add-btn.js';
-import TripInfoView from './view/trip-info.js';
 import EventsModel from './model/events.js';
 import FilterModel from './model/filter.js';
 import TripPresenter from './presenter/trip.js';
@@ -40,7 +39,6 @@ Promise.all([api.getDestinations(), api.getOffers(), api.getEvents()])
 
     const handleEventNewFormClose = () => {
       siteMenuComponent.setMenuItem(MenuItem.EVENTS);
-      addBtnComponent.getElement().disabled = false;
     };
 
     const handleSiteMenuClick = (menuItem) => {
@@ -50,17 +48,14 @@ Promise.all([api.getDestinations(), api.getOffers(), api.getEvents()])
           tripPresenter.destroy();
           tripPresenter.init();
           tripPresenter.createEvent(handleEventNewFormClose);
-          addBtnComponent.getElement().disabled = true;
           break;
         case MenuItem.EVENTS:
           remove(statisticsComponent);
           tripPresenter.destroy();
           tripPresenter.init();
-          addBtnComponent.getElement().disabled = false;
           break;
         case MenuItem.STATISTICS:
           tripPresenter.destroy();
-          addBtnComponent.getElement().disabled = false;
           statisticsComponent = new StatisticsView(eventsModel.getEvents());
           render(bodyContainerElement, statisticsComponent, RenderPosition.BEFOREEND);
           statisticsComponent.restoreHandlers();
@@ -71,7 +66,6 @@ Promise.all([api.getDestinations(), api.getOffers(), api.getEvents()])
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
     addBtnComponent.setAddBtnClickHandler(handleSiteMenuClick);
 
-    render(tripMainElement, new TripInfoView(), RenderPosition.AFTERBEGIN);
     render(tripControlElement, siteMenuComponent, RenderPosition.BEFOREEND);
     render(tripMainElement, addBtnComponent, RenderPosition.BEFOREEND);
   })

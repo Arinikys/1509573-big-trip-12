@@ -1,5 +1,5 @@
 import AbstractView from './abstract.js';
-import {decorateName, getPrep} from '../utils/event.js';
+import {decorateName, getPrep, prettifyNumber} from '../utils/event.js';
 import {prettifyTime} from '../utils/common.js';
 
 const MAX_VIS_OPTION_COUNT = 3;
@@ -46,7 +46,11 @@ const createEventTemplate = (curEvent) => {
             ${prettifyTime(newEndDate.getHours())}:${prettifyTime(newEndDate.getMinutes())}
             </time>
           </p>
-          <p class="event__duration">${duration.hour}H ${duration.minute}M</p>
+          <p class="event__duration">
+              ${duration.day ? prettifyNumber(duration.day) + `D` : ``}
+              ${duration.hour ? prettifyNumber(duration.hour) + `H` : ``}
+              ${duration.minute ? prettifyNumber(duration.minute) + `M` : ``}
+          </p>
         </div>
 
         <p class="event__price">

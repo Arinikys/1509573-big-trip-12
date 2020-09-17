@@ -10,11 +10,15 @@ export const getEndTime = (startTime, duration)=> {
 
 export const getDuration = (startTime, endTime)=> {
   const eventDuration = moment.duration(moment(endTime).diff(moment(startTime)));
+  const day = eventDuration._data.days;
   const hour = eventDuration._data.hours;
   const minute = eventDuration._data.minutes;
-  return {hour, minute};
+  return {day, hour, minute};
 };
 
+export const prettifyNumber = (number) => {
+  return number < 10 ? `0` + number : number;
+};
 
 export const createDateArr = (events) => {
   const dateArr = [];
@@ -53,4 +57,14 @@ export const getPrep = (eventName) => {
 
 export const decorateName = (name) => {
   return name.charAt(0).toUpperCase() + name.substr(1).toLowerCase();
+};
+
+export const sortByPrice = (eventA, eventB) => {
+  return eventB.price - eventA.price;
+};
+
+export const sortByTime = (eventA, eventB) => {
+  const eventADuration = moment(eventA.endDate).diff(moment(eventA.startDate));
+  const eventBDuration = moment(eventB.endDate).diff(moment(eventB.startDate));
+  return eventBDuration - eventADuration;
 };
