@@ -6,6 +6,7 @@ import EventsListContainerView from '../view/events-list.js';
 import EventPresenter, {State as EventPresenterViewState} from './event.js';
 import EventNewPresenter from './event-new.js';
 import {filter} from '../utils/filter.js';
+import {sortByDate} from '../utils/event.js';
 import {createDateArr, crateDateEvensList, sortByTime, sortByPrice} from '../utils/event.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {UpdateType, UserAction, FilterType, SortType} from '../const.js';
@@ -55,7 +56,7 @@ export default class Trip {
 
   _getEvents() {
     const filterType = this._filterModel.getFilter();
-    const events = this._eventsModel.getEvents();
+    const events = sortByDate(this._eventsModel.getEvents());
     const filtredEvents = filter[filterType](events);
     switch (this._currentSortType) {
       case SortType.PRICE:

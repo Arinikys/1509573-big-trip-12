@@ -68,3 +68,11 @@ export const sortByTime = (eventA, eventB) => {
   const eventBDuration = moment(eventB.endDate).diff(moment(eventB.startDate));
   return eventBDuration - eventADuration;
 };
+
+export const sortByDate = (events) => {
+  return events.sort((a, b) => {
+    const dateA = new Date(a.startDate);
+    const dateB = new Date(b.startDate);
+    return dateA - dateB;
+  });
+};

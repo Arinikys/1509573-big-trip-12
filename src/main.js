@@ -71,5 +71,4 @@ Promise.all([api.getDestinations(), api.getOffers(), api.getEvents()])
   })
   .catch(() => {
     eventsModel.setEvents(UpdateType.INIT, []);
-    render(tripMainElement, new TripInfoView(), RenderPosition.AFTERBEGIN);
   });
