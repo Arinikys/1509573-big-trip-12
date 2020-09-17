@@ -1,13 +1,15 @@
 import EventEditView from '../view/edit-event-form.js';
 import {remove, render, RenderPosition} from '../utils/render.js';
 import {UserAction, UpdateType} from '../const.js';
+import AddBtnView from "../view/add-btn";
 
 export default class EventNew {
-  constructor(changeData, destination, offers) {
+  constructor(changeData, destination, offers, addBtnComponent) {
     this._sortContainer = null;
     this._changeData = changeData;
     this._destination = destination;
     this._offers = offers;
+    this._addBtnComponent = addBtnComponent;
 
     this._eventEditComponent = null;
     this._destroyCallback = null;
@@ -49,6 +51,7 @@ export default class EventNew {
     this._eventEditComponent = null;
 
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
+    this._addBtnComponent.getElement().disabled = false;
   }
 
   setSaving() {

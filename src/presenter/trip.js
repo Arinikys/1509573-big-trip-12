@@ -13,10 +13,11 @@ import {UpdateType, UserAction, FilterType, SortType} from '../const.js';
 
 
 export default class Trip {
-  constructor(tripContainer, eventsModel, filterModel, api, destination, offers) {
+  constructor(tripContainer, eventsModel, filterModel, api, destination, offers, addBtnComponent) {
     this._tripContainer = tripContainer;
     this._eventsModel = eventsModel;
     this._filterModel = filterModel;
+    this._addBtnComponent = addBtnComponent;
     this._eventPresenter = {};
     this._dayList = [];
     this._dayItem = null;
@@ -39,7 +40,7 @@ export default class Trip {
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
-    this._eventNewPresenter = new EventNewPresenter(this._handleViewAction, this._destination, this._offers);
+    this._eventNewPresenter = new EventNewPresenter(this._handleViewAction, this._destination, this._offers, this._addBtnComponent);
   }
 
   init() {
