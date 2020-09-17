@@ -6,8 +6,7 @@ import {eventToLabels, makeItemsUniq, getEventsName, priceSumByLabel, getEventsN
 const EVENT_TYPE = `transfer`;
 
 const getEventsLabels = (uniqEventsNames) => {
-  const eventLabels = uniqEventsNames.map((name) => eventToLabels[name]);
-  return eventLabels;
+  return uniqEventsNames.map((name) => eventToLabels[name]);
 };
 
 const getEventsPrice = (labels, events) => {
