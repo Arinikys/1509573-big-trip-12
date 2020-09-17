@@ -29,7 +29,7 @@ let statisticsComponent = null;
 Promise.all([api.getDestinations(), api.getOffers(), api.getEvents()])
   .then(([destination, offers, events]) => {
 
-    const tripPresenter = new TripPresenter(tripEventsElement, eventsModel, filterModel, api, destination, offers);
+    const tripPresenter = new TripPresenter(tripEventsElement, eventsModel, filterModel, api, destination, offers, addBtnComponent);
     const filterPresenter = new FilterPresenter(tripControlElement, filterModel, eventsModel);
 
     eventsModel.setEvents(UpdateType.INIT, events);
@@ -48,6 +48,7 @@ Promise.all([api.getDestinations(), api.getOffers(), api.getEvents()])
           tripPresenter.destroy();
           tripPresenter.init();
           tripPresenter.createEvent(handleEventNewFormClose);
+          addBtnComponent.getElement().disabled = true;
           break;
         case MenuItem.EVENTS:
           remove(statisticsComponent);
@@ -71,5 +72,4 @@ Promise.all([api.getDestinations(), api.getOffers(), api.getEvents()])
   })
   .catch(() => {
     eventsModel.setEvents(UpdateType.INIT, []);
-    render(tripMainElement, new TripInfoView(), RenderPosition.AFTERBEGIN);
   });

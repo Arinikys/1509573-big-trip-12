@@ -207,8 +207,6 @@ export default class EditEvent extends SmartView {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
-    this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
-    this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
 
     this._eventNameHandler = this._eventNameHandler.bind(this);
     this._eventCityHandler = this._eventCityHandler.bind(this);
@@ -243,15 +241,15 @@ export default class EditEvent extends SmartView {
     this._setDatepicker();
   }
 
-  _startDateChangeHandler([userDate]) {
+  _eventStartDateHandler([userDate]) {
     this.updateData({
-      startDate: userDate
+      dataStartDate: userDate
     });
   }
 
-  _endDateChangeHandler([userDate]) {
+  _eventEndDateHandler([userDate]) {
     this.updateData({
-      endDate: userDate
+      dataEndDate: userDate
     });
   }
 
@@ -268,7 +266,7 @@ export default class EditEvent extends SmartView {
           enableTime: true,
           dateFormat: `d/m/y H:i`,
           defaultDate: this._data.dataStartDate,
-          onChange: this._startDateChangeHandler
+          onChange: this._eventStartDateHandler
         }
     );
 
@@ -278,7 +276,7 @@ export default class EditEvent extends SmartView {
           enableTime: true,
           dateFormat: `d/m/y H:i`,
           defaultDate: this._data.dataEndDate,
-          onChange: this._endDateChangeHandler
+          onChange: this._eventEndDateHandler
         }
     );
   }
@@ -294,12 +292,6 @@ export default class EditEvent extends SmartView {
     this.getElement()
       .querySelector(`.event__input--price`)
       .addEventListener(`change`, this._eventPriceHandler);
-    this.getElement()
-      .querySelector(`#event-start-time-1`)
-      .addEventListener(`change`, this._eventStartDateHandler);
-    this.getElement()
-      .querySelector(`#event-end-time-1`)
-      .addEventListener(`change`, this._eventEndDateHandler);
 
     const offersInputs = this.getElement().querySelectorAll(`.event__available-offers input`);
     for (let input of offersInputs) {
@@ -339,20 +331,6 @@ export default class EditEvent extends SmartView {
     }
     this.updateData({
       dataOptions: offersList
-    });
-  }
-
-  _eventStartDateHandler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      dataStartDate: new Date(evt.target.value)
-    });
-  }
-
-  _eventEndDateHandler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      dataEndDate: new Date(evt.target.value)
     });
   }
 
