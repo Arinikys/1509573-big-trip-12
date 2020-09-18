@@ -1,4 +1,4 @@
-import EventsModel from './model/events.js';
+import EventsModel from '../model/events.js';
 
 const Method = {
   GET: `GET`,
@@ -12,7 +12,7 @@ const SuccessHTTPStatusRange = {
   MAX: 299
 };
 
-export default class Api {
+export default class Index {
   constructor(endPoint, authorization) {
     this._endPoint = endPoint;
     this._authorization = authorization;
@@ -20,19 +20,19 @@ export default class Api {
 
   getEvents() {
     return this._load({url: `points`})
-      .then(Api.toJSON)
+      .then(Index.toJSON)
       .then((events) => events.map(EventsModel.adaptToClient));
   }
 
   getDestinations() {
     return this._load({url: `destinations`})
-      .then(Api.toJSON)
+      .then(Index.toJSON)
       .then((destinations) => destinations);
   }
 
   getOffers() {
     return this._load({url: `offers`})
-      .then(Api.toJSON)
+      .then(Index.toJSON)
       .then((offers) => offers);
   }
 
@@ -43,7 +43,7 @@ export default class Api {
       body: JSON.stringify(EventsModel.adaptToServer(event)),
       headers: new Headers({"Content-Type": `application/json`})
     })
-      .then(Api.toJSON)
+      .then(Index.toJSON)
       .then(EventsModel.adaptToClient);
   }
 
@@ -54,7 +54,7 @@ export default class Api {
       body: JSON.stringify(EventsModel.adaptToServer(event)),
       headers: new Headers({"Content-Type": `application/json`})
     })
-      .then(Api.toJSON)
+      .then(Index.toJSON)
       .then(EventsModel.adaptToClient);
   }
 
@@ -63,6 +63,16 @@ export default class Api {
       url: `points/${event.id}`,
       method: Method.DELETE
     });
+  }
+
+  sync(data) {
+    return this._load({
+      url: `points/sync`,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON);
   }
 
   _load({
@@ -77,8 +87,8 @@ export default class Api {
         `${this._endPoint}/${url}`,
         {method, body, headers}
     )
-      .then(Api.checkStatus)
-      .catch(Api.catchError);
+      .then(Index.checkStatus)
+      .catch(Index.catchError);
   }
 
   static checkStatus(response) {
