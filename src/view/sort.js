@@ -43,7 +43,7 @@ const createSortTemplate = (currentSortType) => {
 
   const createSort = () => {
     let sortItems = ``;
-    for (let item of sort) {
+    for (const item of sort) {
       if (!item.isInput) {
         sortItems += `<span class="trip-sort__item  trip-sort__item--${item.label}">${item.name}</span>`;
       } else {

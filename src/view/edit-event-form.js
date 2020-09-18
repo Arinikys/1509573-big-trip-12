@@ -28,7 +28,7 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
 
   const getAvailableOption = ()=> {
     const availableOptionName = new Set();
-    for (let option of dataOptions) {
+    for (const option of dataOptions) {
       availableOptionName.add(option.title);
     }
     return availableOptionName;
@@ -36,7 +36,7 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
 
   const createDescrPhotoTemplate = (photoList) => {
     let descrPhotoList = ``;
-    for (let photo of photoList) {
+    for (const photo of photoList) {
       descrPhotoList += `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
     }
     return descrPhotoList;
@@ -63,7 +63,7 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
     const availableOptionList = getAvailableOption();
     const curOption = offers.filter((offer) => offer.type === dataEventName.toLowerCase());
     curOption[0].offers.forEach((option) => {
-      let optionAttr = option.title.toLowerCase().replace(/ /g, `-`);
+      const optionAttr = option.title.toLowerCase().replace(/ /g, `-`);
       optionList += `<div class="event__offer-selector">
         <input
           class="event__offer-checkbox  visually-hidden"
@@ -95,9 +95,9 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
 
   const createTripEventTemplate = (type) => {
     let tripEventList = ``;
-    for (let tripEvent of TRIP_EVENT) {
+    for (const tripEvent of TRIP_EVENT) {
       if (tripEvent.type === type) {
-        let tripEventNameLC = tripEvent.name.toLowerCase();
+        const tripEventNameLC = tripEvent.name.toLowerCase();
         tripEventList += `<div class="event__type-item">
                 <input id="event-type-${tripEventNameLC}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${tripEventNameLC}" ${isDisabled ? `disabled` : ``}>
                 <label class="event__type-label  event__type-label--${tripEventNameLC}" for="event-type-${tripEventNameLC}-1">${tripEvent.name}</label>
@@ -112,7 +112,7 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
 
   const createDestinationCityTemplate = () => {
     let destinationCityList = ``;
-    for (let city of destinationPoints) {
+    for (const city of destinationPoints) {
       destinationCityList += `<option value="${city.name}"></option>`;
     }
     return destinationCityList;
@@ -283,7 +283,7 @@ export default class EditEvent extends SmartView {
 
   _setInnerHandlers() {
     const eventTypeRadio = this.getElement().querySelectorAll(`input[name="event-type"]`);
-    for (let radio of eventTypeRadio) {
+    for (const radio of eventTypeRadio) {
       radio.addEventListener(`change`, this._eventNameHandler);
     }
     this.getElement()
@@ -294,7 +294,7 @@ export default class EditEvent extends SmartView {
       .addEventListener(`change`, this._eventPriceHandler);
 
     const offersInputs = this.getElement().querySelectorAll(`.event__available-offers input`);
-    for (let input of offersInputs) {
+    for (const input of offersInputs) {
       input.addEventListener(`change`, this._eventOffersHandler);
     }
   }
@@ -325,8 +325,8 @@ export default class EditEvent extends SmartView {
   _eventOffersHandler() {
     const offersInputs = this.getElement().querySelectorAll(`.event__available-offers input`);
     const checkedOffers = Array.from(offersInputs).filter((input) => input.checked);
-    let offersList = [];
-    for (let offer of checkedOffers) {
+    const offersList = [];
+    for (const offer of checkedOffers) {
       offersList.push({title: offer.dataset.title, price: parseInt(offer.dataset.price, 10)});
     }
     this.updateData({

@@ -13,7 +13,7 @@ const createEventTemplate = (curEvent) => {
   const createOptionTemplate = () => {
     let optionList = ``;
     if (options.length > 0) {
-      for (let option of options.slice(0, MAX_VIS_OPTION_COUNT)) {
+      for (const option of options.slice(0, MAX_VIS_OPTION_COUNT)) {
         optionList += `<li class="event__offer">
           <span class="event__offer-title">${option.title}</span>
           &plus; &euro; &nbsp;<span class="event__offer-price">${option.price}</span>

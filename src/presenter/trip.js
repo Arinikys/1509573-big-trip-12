@@ -62,11 +62,9 @@ export default class Trip {
     switch (this._currentSortType) {
       case SortType.PRICE:
         return filtredEvents.sort(sortByPrice);
-        // eslint-disable-next-line no-unreachable
         break;
       case SortType.TIME:
         return filtredEvents.sort(sortByTime);
-        // eslint-disable-next-line no-unreachable
         break;
     }
 
@@ -106,7 +104,7 @@ export default class Trip {
   }
 
   _renderDayList() {
-    let dateArr = createDateArr(this._getEvents());
+    const dateArr = createDateArr(this._getEvents());
     if (this._currentSortType === SortType.EVENT) {
       dateArr.forEach((day, count) => {
         const dayElem = new DayView(new Date(day), ++count);
@@ -127,7 +125,7 @@ export default class Trip {
   }
 
   _renderEventsList(eventsListContainer, dateEvensList) {
-    for (let event of dateEvensList) {
+    for (const event of dateEvensList) {
       this._renderEvent(eventsListContainer, event);
     }
   }
@@ -221,7 +219,7 @@ export default class Trip {
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.destroy());
     this._eventPresenter = {};
-    for (let day of this._dayList) {
+    for (const day of this._dayList) {
       remove(day);
       day.removeElement();
     }

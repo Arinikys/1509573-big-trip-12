@@ -33,7 +33,7 @@ export default class MenuControls extends AbstractView {
 
   _removeActiveClass() {
     const tabs = this.getElement().querySelectorAll(`.trip-tabs__btn`);
-    for (let tab of tabs) {
+    for (const tab of tabs) {
       if (tab.classList.contains(`trip-tabs__btn--active`)) {
         tab.classList.remove(`trip-tabs__btn--active`);
       }
