@@ -11,7 +11,7 @@ const getEventsLabels = (uniqEventsNames) => {
 
 const getEventsPrice = (labels, events) => {
   const price = [];
-  for (let label of labels) {
+  for (const label of labels) {
     price.push(priceSumByLabel(events, label));
   }
   return price;
