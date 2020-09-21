@@ -208,12 +208,12 @@ export default class EditEvent extends SmartView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
 
-    this._eventNameHandler = this._eventNameHandler.bind(this);
-    this._eventCityHandler = this._eventCityHandler.bind(this);
-    this._eventPriceHandler = this._eventPriceHandler.bind(this);
-    this._eventOffersHandler = this._eventOffersHandler.bind(this);
-    this._eventStartDateHandler = this._eventStartDateHandler.bind(this);
-    this._eventEndDateHandler = this._eventEndDateHandler.bind(this);
+    this._eventNameClickHandler = this._eventNameClickHandler.bind(this);
+    this._eventCityClickHandler = this._eventCityClickHandler.bind(this);
+    this._eventPriceClickHandler = this._eventPriceClickHandler.bind(this);
+    this._eventOffersClickHandler = this._eventOffersClickHandler.bind(this);
+    this._eventStartDateClickHandler = this._eventStartDateClickHandler.bind(this);
+    this._eventEndDateClickHandler = this._eventEndDateClickHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._formCloseClickHandler = this._formCloseClickHandler.bind(this);
     this._setInnerHandlers();
@@ -241,13 +241,13 @@ export default class EditEvent extends SmartView {
     this._setDatepicker();
   }
 
-  _eventStartDateHandler([userDate]) {
+  _eventStartDateClickHandler([userDate]) {
     this.updateData({
       dataStartDate: userDate
     });
   }
 
-  _eventEndDateHandler([userDate]) {
+  _eventEndDateClickHandler([userDate]) {
     this.updateData({
       dataEndDate: userDate
     });
@@ -266,7 +266,7 @@ export default class EditEvent extends SmartView {
           enableTime: true,
           dateFormat: `d/m/y H:i`,
           defaultDate: this._data.dataStartDate,
-          onChange: this._eventStartDateHandler
+          onChange: this._eventStartDateClickHandler
         }
     );
 
@@ -276,7 +276,7 @@ export default class EditEvent extends SmartView {
           enableTime: true,
           dateFormat: `d/m/y H:i`,
           defaultDate: this._data.dataEndDate,
-          onChange: this._eventEndDateHandler
+          onChange: this._eventEndDateClickHandler
         }
     );
   }
@@ -284,18 +284,18 @@ export default class EditEvent extends SmartView {
   _setInnerHandlers() {
     const eventTypeRadio = this.getElement().querySelectorAll(`input[name="event-type"]`);
     for (const radio of eventTypeRadio) {
-      radio.addEventListener(`change`, this._eventNameHandler);
+      radio.addEventListener(`change`, this._eventNameClickHandler);
     }
     this.getElement()
       .querySelector(`#event-destination-1`)
-      .addEventListener(`change`, this._eventCityHandler);
+      .addEventListener(`change`, this._eventCityClickHandler);
     this.getElement()
       .querySelector(`.event__input--price`)
-      .addEventListener(`change`, this._eventPriceHandler);
+      .addEventListener(`change`, this._eventPriceClickHandler);
 
     const offersInputs = this.getElement().querySelectorAll(`.event__available-offers input`);
     for (const input of offersInputs) {
-      input.addEventListener(`change`, this._eventOffersHandler);
+      input.addEventListener(`change`, this._eventOffersClickHandler);
     }
   }
 
@@ -304,7 +304,7 @@ export default class EditEvent extends SmartView {
     this._callback.favoriteClick();
   }
 
-  _eventCityHandler(evt) {
+  _eventCityClickHandler(evt) {
     evt.preventDefault();
     this.updateData({
       dataDestinationCity: evt.target.value,
@@ -315,14 +315,14 @@ export default class EditEvent extends SmartView {
     });
   }
 
-  _eventPriceHandler(evt) {
+  _eventPriceClickHandler(evt) {
     evt.preventDefault();
     this.updateData({
       dataPrice: parseInt(evt.target.value, 10)
     });
   }
 
-  _eventOffersHandler() {
+  _eventOffersClickHandler() {
     const offersInputs = this.getElement().querySelectorAll(`.event__available-offers input`);
     const checkedOffers = Array.from(offersInputs).filter((input) => input.checked);
     const offersList = [];
@@ -334,7 +334,7 @@ export default class EditEvent extends SmartView {
     });
   }
 
-  _eventNameHandler(evt) {
+  _eventNameClickHandler(evt) {
     evt.preventDefault();
     let dataEventName = evt.target.value;
     dataEventName = dataEventName.toLowerCase();

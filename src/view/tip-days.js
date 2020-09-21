@@ -6,7 +6,7 @@ const createTipDaysTemplate = () => {
   );
 };
 
-export default class tipDays extends AbstractView {
+export default class TipDays extends AbstractView {
   getTemplate() {
     return createTipDaysTemplate();
   }
