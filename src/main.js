@@ -9,7 +9,7 @@ import {render, RenderPosition, remove} from './utils/render.js';
 import {UpdateType, MenuItem} from './const.js';
 import Api from './api.js';
 
-const AUTHORIZATION = `Basic fghjdfzdfgzdfgghdfgh`;
+const AUTHORIZATION = `Basic fghjdfghdfgh`;
 const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
 
 const tripMainElement = document.querySelector(`.trip-main`);
