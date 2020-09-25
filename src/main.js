@@ -1,4 +1,4 @@
-import MenuControlsView from './view/site-menu.js';
+import MenuControlsView from './view/menu-controls.js';
 import StatisticsView from "./view/stat.js";
 import AddBtnView from './view/add-btn.js';
 import EventsModel from './model/events.js';

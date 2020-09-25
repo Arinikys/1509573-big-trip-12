@@ -6,7 +6,7 @@ const createStartTemplate = () => {
   );
 };
 
-export default class Sort extends AbstractView {
+export default class Start extends AbstractView {
   getTemplate() {
     return createStartTemplate();
   }

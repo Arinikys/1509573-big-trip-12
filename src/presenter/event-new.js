@@ -1,4 +1,4 @@
-import EventEditView from '../view/edit-event-form.js';
+import EventEditView from '../view/edit-event.js';
 import {remove, render, RenderPosition} from '../utils/render.js';
 import {UserAction, UpdateType} from '../const.js';
 import AddBtnView from "../view/add-btn";

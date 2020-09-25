@@ -1,8 +1,8 @@
-import DayView from '../view/day.js';
+import DayView from '../view/day-block.js';
 import SortView from '../view/sort.js';
 import StartView from '../view/start.js';
 import LoadingView from '../view/loading.js';
-import EventsListContainerView from '../view/events-list.js';
+import EventsListContainerView from '../view/events-list-container.js';
 import EventPresenter, {State as EventPresenterViewState} from './event.js';
 import EventNewPresenter from './event-new.js';
 import {filter} from '../utils/filter.js';
@@ -62,11 +62,9 @@ export default class Trip {
     switch (this._currentSortType) {
       case SortType.PRICE:
         return filtredEvents.sort(sortByPrice);
-        // eslint-disable-next-line no-unreachable
         break;
       case SortType.TIME:
         return filtredEvents.sort(sortByTime);
-        // eslint-disable-next-line no-unreachable
         break;
     }
 
@@ -106,28 +104,28 @@ export default class Trip {
   }
 
   _renderDayList() {
-    let dateArr = createDateArr(this._getEvents());
+    const dateArr = createDateArr(this._getEvents());
     if (this._currentSortType === SortType.EVENT) {
       dateArr.forEach((day, count) => {
-        const dayElem = new DayView(new Date(day), ++count);
-        this._dayList.push(dayElem);
-        render(this._tripContainer, dayElem, RenderPosition.BEFOREEND);
-        const eventsListContainer = new EventsListContainerView();
-        render(dayElem, eventsListContainer, RenderPosition.BEFOREEND);
+        const DayElem = new DayView(new Date(day), ++count);
+        this._dayList.push(DayElem);
+        render(this._tripContainer, DayElem, RenderPosition.BEFOREEND);
+        const EventsListContainer = new EventsListContainerView();
+        render(DayElem, EventsListContainer, RenderPosition.BEFOREEND);
         const dateEvensList = crateDateEvensList(this._getEvents(), new Date(day));
-        this._renderEventsList(eventsListContainer, dateEvensList);
+        this._renderEventsList(EventsListContainer, dateEvensList);
       });
     } else {
       this._dayItem = new DayView();
       render(this._tripContainer, this._dayItem, RenderPosition.BEFOREEND);
-      const eventsListContainer = new EventsListContainerView();
-      render(this._dayItem, eventsListContainer, RenderPosition.BEFOREEND);
-      this._renderEventsList(eventsListContainer, this._getEvents());
+      const EventsListContainer = new EventsListContainerView();
+      render(this._dayItem, EventsListContainer, RenderPosition.BEFOREEND);
+      this._renderEventsList(EventsListContainer, this._getEvents());
     }
   }
 
   _renderEventsList(eventsListContainer, dateEvensList) {
-    for (let event of dateEvensList) {
+    for (const event of dateEvensList) {
       this._renderEvent(eventsListContainer, event);
     }
   }
@@ -221,7 +219,7 @@ export default class Trip {
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.destroy());
     this._eventPresenter = {};
-    for (let day of this._dayList) {
+    for (const day of this._dayList) {
       remove(day);
       day.removeElement();
     }

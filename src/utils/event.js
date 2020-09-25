@@ -22,7 +22,7 @@ export const prettifyNumber = (number) => {
 
 export const createDateArr = (events) => {
   const dateArr = [];
-  for (let event of events) {
+  for (const event of events) {
     let newDate = new Date(event.startDate);
     newDate = newDate.setHours(23, 59, 59, 999);
     if (!dateArr.includes(newDate)) {

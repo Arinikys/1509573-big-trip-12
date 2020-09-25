@@ -21,7 +21,7 @@ export const getEventsName = (events) => events.map((event) => event.name);
 export const priceSumByLabel = (events, label) => {
   const eventsByLabel = events.filter((event) => event.name === label);
   let priceSum = 0;
-  for (let event of eventsByLabel) {
+  for (const event of eventsByLabel) {
     priceSum += event.price;
   }
   return priceSum;
@@ -29,7 +29,7 @@ export const priceSumByLabel = (events, label) => {
 
 export const getEventsNameByType = (labels, type) => {
   const labelsByType = [];
-  for (let label of labels) {
+  for (const label of labels) {
     const tripEvent = TRIP_EVENT.filter((event) => event.name.toLowerCase() === label);
     if (tripEvent[0].type === type) {
       labelsByType.push(label);
@@ -45,7 +45,7 @@ const countEventsByLabel = (events, label) => {
 
 export const getEventsCount = (events, labels) => {
   const count = [];
-  for (let label of labels) {
+  for (const label of labels) {
     count.push(countEventsByLabel(events, label));
   }
   return count;
@@ -55,13 +55,13 @@ export const getEventsCount = (events, labels) => {
 export const countTimeByLabel = (events, labels) => {
   let eventByLabel;
   let dateSumArr = [];
-  for (let label of labels) {
+  for (const label of labels) {
     eventByLabel = events.filter((event) => event.name === label);
     let dateSum = 0;
-    for (let event of eventByLabel) {
+    for (const event of eventByLabel) {
       dateSum += moment(event.endDate).diff(moment(event.startDate));
     }
-    let durationSum = moment.duration(new Date(dateSum));
+    const durationSum = moment.duration(new Date(dateSum));
     dateSumArr.push(Math.round(durationSum._milliseconds / 3600000));
   }
   return dateSumArr;
