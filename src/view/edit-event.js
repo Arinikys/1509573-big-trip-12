@@ -28,7 +28,7 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
 
   const getAvailableOption = ()=> {
     const availableOptionName = new Set();
-    for (let option of dataOptions) {
+    for (const option of dataOptions) {
       availableOptionName.add(option.title);
     }
     return availableOptionName;
@@ -36,7 +36,7 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
 
   const createDescrPhotoTemplate = (photoList) => {
     let descrPhotoList = ``;
-    for (let photo of photoList) {
+    for (const photo of photoList) {
       descrPhotoList += `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
     }
     return descrPhotoList;
@@ -63,7 +63,7 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
     const availableOptionList = getAvailableOption();
     const curOption = offers.filter((offer) => offer.type === dataEventName.toLowerCase());
     curOption[0].offers.forEach((option) => {
-      let optionAttr = option.title.toLowerCase().replace(/ /g, `-`);
+      const optionAttr = option.title.toLowerCase().replace(/ /g, `-`);
       optionList += `<div class="event__offer-selector">
         <input
           class="event__offer-checkbox  visually-hidden"
@@ -95,9 +95,9 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
 
   const createTripEventTemplate = (type) => {
     let tripEventList = ``;
-    for (let tripEvent of TRIP_EVENT) {
+    for (const tripEvent of TRIP_EVENT) {
       if (tripEvent.type === type) {
-        let tripEventNameLC = tripEvent.name.toLowerCase();
+        const tripEventNameLC = tripEvent.name.toLowerCase();
         tripEventList += `<div class="event__type-item">
                 <input id="event-type-${tripEventNameLC}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${tripEventNameLC}" ${isDisabled ? `disabled` : ``}>
                 <label class="event__type-label  event__type-label--${tripEventNameLC}" for="event-type-${tripEventNameLC}-1">${tripEvent.name}</label>
@@ -112,7 +112,7 @@ const createEditEventTemplate = (curEvent = {}, destinationPoints, offers) => {
 
   const createDestinationCityTemplate = () => {
     let destinationCityList = ``;
-    for (let city of destinationPoints) {
+    for (const city of destinationPoints) {
       destinationCityList += `<option value="${city.name}"></option>`;
     }
     return destinationCityList;
@@ -207,15 +207,13 @@ export default class EditEvent extends SmartView {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
-    this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
-    this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
 
-    this._eventNameHandler = this._eventNameHandler.bind(this);
-    this._eventCityHandler = this._eventCityHandler.bind(this);
-    this._eventPriceHandler = this._eventPriceHandler.bind(this);
-    this._eventOffersHandler = this._eventOffersHandler.bind(this);
-    this._eventStartDateHandler = this._eventStartDateHandler.bind(this);
-    this._eventEndDateHandler = this._eventEndDateHandler.bind(this);
+    this._eventNameClickHandler = this._eventNameClickHandler.bind(this);
+    this._eventCityClickHandler = this._eventCityClickHandler.bind(this);
+    this._eventPriceClickHandler = this._eventPriceClickHandler.bind(this);
+    this._eventOffersClickHandler = this._eventOffersClickHandler.bind(this);
+    this._eventStartDateClickHandler = this._eventStartDateClickHandler.bind(this);
+    this._eventEndDateClickHandler = this._eventEndDateClickHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._formCloseClickHandler = this._formCloseClickHandler.bind(this);
     this._setInnerHandlers();
@@ -243,15 +241,15 @@ export default class EditEvent extends SmartView {
     this._setDatepicker();
   }
 
-  _startDateChangeHandler([userDate]) {
+  _eventStartDateClickHandler([userDate]) {
     this.updateData({
-      startDate: userDate
+      dataStartDate: userDate
     });
   }
 
-  _endDateChangeHandler([userDate]) {
+  _eventEndDateClickHandler([userDate]) {
     this.updateData({
-      endDate: userDate
+      dataEndDate: userDate
     });
   }
 
@@ -268,7 +266,7 @@ export default class EditEvent extends SmartView {
           enableTime: true,
           dateFormat: `d/m/y H:i`,
           defaultDate: this._data.dataStartDate,
-          onChange: this._startDateChangeHandler
+          onChange: this._eventStartDateClickHandler
         }
     );
 
@@ -278,32 +276,26 @@ export default class EditEvent extends SmartView {
           enableTime: true,
           dateFormat: `d/m/y H:i`,
           defaultDate: this._data.dataEndDate,
-          onChange: this._endDateChangeHandler
+          onChange: this._eventEndDateClickHandler
         }
     );
   }
 
   _setInnerHandlers() {
     const eventTypeRadio = this.getElement().querySelectorAll(`input[name="event-type"]`);
-    for (let radio of eventTypeRadio) {
-      radio.addEventListener(`change`, this._eventNameHandler);
+    for (const radio of eventTypeRadio) {
+      radio.addEventListener(`change`, this._eventNameClickHandler);
     }
     this.getElement()
       .querySelector(`#event-destination-1`)
-      .addEventListener(`change`, this._eventCityHandler);
+      .addEventListener(`change`, this._eventCityClickHandler);
     this.getElement()
       .querySelector(`.event__input--price`)
-      .addEventListener(`change`, this._eventPriceHandler);
-    this.getElement()
-      .querySelector(`#event-start-time-1`)
-      .addEventListener(`change`, this._eventStartDateHandler);
-    this.getElement()
-      .querySelector(`#event-end-time-1`)
-      .addEventListener(`change`, this._eventEndDateHandler);
+      .addEventListener(`change`, this._eventPriceClickHandler);
 
     const offersInputs = this.getElement().querySelectorAll(`.event__available-offers input`);
-    for (let input of offersInputs) {
-      input.addEventListener(`change`, this._eventOffersHandler);
+    for (const input of offersInputs) {
+      input.addEventListener(`change`, this._eventOffersClickHandler);
     }
   }
 
@@ -312,7 +304,7 @@ export default class EditEvent extends SmartView {
     this._callback.favoriteClick();
   }
 
-  _eventCityHandler(evt) {
+  _eventCityClickHandler(evt) {
     evt.preventDefault();
     this.updateData({
       dataDestinationCity: evt.target.value,
@@ -323,18 +315,18 @@ export default class EditEvent extends SmartView {
     });
   }
 
-  _eventPriceHandler(evt) {
+  _eventPriceClickHandler(evt) {
     evt.preventDefault();
     this.updateData({
       dataPrice: parseInt(evt.target.value, 10)
     });
   }
 
-  _eventOffersHandler() {
+  _eventOffersClickHandler() {
     const offersInputs = this.getElement().querySelectorAll(`.event__available-offers input`);
     const checkedOffers = Array.from(offersInputs).filter((input) => input.checked);
-    let offersList = [];
-    for (let offer of checkedOffers) {
+    const offersList = [];
+    for (const offer of checkedOffers) {
       offersList.push({title: offer.dataset.title, price: parseInt(offer.dataset.price, 10)});
     }
     this.updateData({
@@ -342,21 +334,7 @@ export default class EditEvent extends SmartView {
     });
   }
 
-  _eventStartDateHandler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      dataStartDate: new Date(evt.target.value)
-    });
-  }
-
-  _eventEndDateHandler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      dataEndDate: new Date(evt.target.value)
-    });
-  }
-
-  _eventNameHandler(evt) {
+  _eventNameClickHandler(evt) {
     evt.preventDefault();
     let dataEventName = evt.target.value;
     dataEventName = dataEventName.toLowerCase();

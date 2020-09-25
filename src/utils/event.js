@@ -22,7 +22,7 @@ export const prettifyNumber = (number) => {
 
 export const createDateArr = (events) => {
   const dateArr = [];
-  for (let event of events) {
+  for (const event of events) {
     let newDate = new Date(event.startDate);
     newDate = newDate.setHours(23, 59, 59, 999);
     if (!dateArr.includes(newDate)) {
@@ -67,4 +67,12 @@ export const sortByTime = (eventA, eventB) => {
   const eventADuration = moment(eventA.endDate).diff(moment(eventA.startDate));
   const eventBDuration = moment(eventB.endDate).diff(moment(eventB.startDate));
   return eventBDuration - eventADuration;
+};
+
+export const sortByDate = (events) => {
+  return events.sort((a, b) => {
+    const dateA = new Date(a.startDate);
+    const dateB = new Date(b.startDate);
+    return dateA - dateB;
+  });
 };
