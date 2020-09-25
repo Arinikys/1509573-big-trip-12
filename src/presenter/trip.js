@@ -62,10 +62,8 @@ export default class Trip {
     switch (this._currentSortType) {
       case SortType.PRICE:
         return filtredEvents.sort(sortByPrice);
-        break;
       case SortType.TIME:
         return filtredEvents.sort(sortByTime);
-        break;
     }
 
     return filtredEvents;
