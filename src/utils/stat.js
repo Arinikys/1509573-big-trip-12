@@ -54,7 +54,7 @@ export const getEventsCount = (events, labels) => {
 
 export const countTimeByLabel = (events, labels) => {
   let eventByLabel;
-  let dateSumArr = [];
+  const dateSumArr = [];
   for (const label of labels) {
     eventByLabel = events.filter((event) => event.name === label);
     let dateSum = 0;

@@ -92,14 +92,10 @@ export default class Events extends Observer {
         {},
         event,
         {
-          // eslint-disable-next-line camelcase
-          date_to: event.endDate,
-          // eslint-disable-next-line camelcase
-          date_from: event.startDate,
-          // eslint-disable-next-line camelcase
-          is_favorite: event.isFavorite,
-          // eslint-disable-next-line camelcase
-          base_price: event.price,
+          [`date_to`]: event.endDate,
+          [`date_from`]: event.startDate,
+          [`is_favorite`]: event.isFavorite,
+          [`base_price`]: event.price,
           destination: {
             name: event.destinationCity,
             description: event.destination.descr,
